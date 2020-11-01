@@ -1,13 +1,15 @@
 // In App.js in a new project
 
 import * as React from 'react';
-import { Button, View, Text, Image, TextInput, StyleSheet  } from 'react-native';
+import { Button, View, Text, Image, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // import React, { useEffect, useState } from 'react';
-import { Dimensions, 
-  Platform, TouchableOpacity } from 'react-native';
+import {
+  Dimensions,
+  Platform, TouchableOpacity
+} from 'react-native';
 import { Camera } from 'expo-camera';
 // import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
@@ -24,20 +26,34 @@ function Login() {
   const [value, onChangeUserText] = React.useState('');
   const [password, onChangePasswordText] = React.useState('');
 
+  // really basic HTTP request to the EC instance I got going
+  const submitInfo = async () => {
+    const url = "http://ec2-3-83-108-10.compute-1.amazonaws.com:3000/";
+    try {
+      let response = await fetch(url);
+      let fetchData = await response.text();
+      console.log(fetchData);
+      return fetchData;
+    } catch (error) {
+      console.log("Server is probably not running if you're seeing error");
+      console.error(error);
+    }
+  }
+
   return (
-    <View style={{flex: 1, flexDirection: 'column', justifyContent: "space-between"}}>
-      
-      <Text style={{ flex: .5, alignItems: "center", textAlign: "center", fontSize: 50}}>Snap & Go</Text>
+    <View style={{ flex: 1, flexDirection: 'column', justifyContent: "space-between" }}>
 
-        <Image
-          style={styles.placeholderImage}
-          source={{
-            uri: 'https://reactnative.dev/img/tiny_logo.png',
-          }}
-        />
+      <Text style={{ flex: .5, alignItems: "center", textAlign: "center", fontSize: 50 }}>Snap & Go</Text>
+
+      <Image
+        style={styles.placeholderImage}
+        source={{
+          uri: 'https://reactnative.dev/img/tiny_logo.png',
+        }}
+      />
 
 
-      <View style={{flex: 1, flexDirection: "column", alignItems: "center"}}>
+      <View style={{ flex: 1, flexDirection: "column", alignItems: "center" }}>
         <TextInput
           focus
           autoCompleteType={"username"}
@@ -55,9 +71,10 @@ function Login() {
           placeholder={'Password'}
         />
       </View>
-      <View style={{flex: .5}}>
-        <Button 
+      <View style={{ flex: .5 }}>
+        <Button
           title="Login"
+          onPress={submitInfo}
         />
       </View>
     </View>
@@ -86,7 +103,7 @@ function snapCamera() {
   const [ratio, setRatio] = React.useState('4:3');  // default is 4:3
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
-  const [isRatioSet, setIsRatioSet] =  React.useState(false);
+  const [isRatioSet, setIsRatioSet] = React.useState(false);
 
   // on screen  load, ask for permission to use the camera
   React.useEffect(() => {
@@ -109,17 +126,17 @@ function snapCamera() {
       let distances = {};
       let decRatios = {};
       let minDistance = null;
-     
+
       // goes through ratios and gets one closest to screen ratio
       // uses width/height to choose the best one
       for (const ratio of ratios) {
         const ratioVals = ratio.split(':');
         const decRatio = parseInt(ratioVals[0]) / parseInt(ratioVals[1]);
         decRatios[ratio] = decRatio;
-        
+
         // ratio can't be larger than the screen, so it grabs the closest
         // one that isn't bigger than the screen
-        const distance = screenRatio - decRatio; 
+        const distance = screenRatio - decRatio;
         distances[ratio] = decRatio;
         if (minDistance == null) {
           minDistance = ratio;
@@ -132,14 +149,14 @@ function snapCamera() {
       // set the best match
       chosenRatio = minDistance;
       setRatio(chosenRatio);
-      
+
       // Flag set to calculate ratio only once
       setIsRatioSet(true);
     }
   };
 
   // camera needs to be open when getting the supported ratios
-  const setCameraReady = async() => {
+  const setCameraReady = async () => {
     if (!isRatioSet) {
       await getRatio();
     }
@@ -147,9 +164,9 @@ function snapCamera() {
 
   const takePicture = async () => {
     if (camera) {
-        const options = { quality: 1, base64: true};
-        const data = await camera.takePictureAsync(options);
-        console.log(data);
+      const options = { quality: 1, base64: true };
+      const data = await camera.takePictureAsync(options);
+      console.log(data);
     }
   };
 
@@ -178,37 +195,37 @@ function snapCamera() {
             setCamera(ref);
           }}>
           <View
-          style={{
-            flex: 1,
-            backgroundColor: 'transparent',
-            flexDirection: 'row',
-          }}>
-          <TouchableOpacity
             style={{
-              flex: 1.0,
-              alignSelf: 'flex-end',
-              //alignItems: 'center',
-            }}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              )
-          }}>
-            <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 20, color: 'white' }}> Flip </Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-          style={{
-            flex: 2.0,
-            alignSelf: 'flex-end',
-            //alignItems: 'center',
-          }}
-          onPress={() => takePicture()
-          }> 
-          <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 0, color: 'white' }}> Snap </Text>
-          </TouchableOpacity>
-        </View>
+              flex: 1,
+              backgroundColor: 'transparent',
+              flexDirection: 'row',
+            }}>
+            <TouchableOpacity
+              style={{
+                flex: 1.0,
+                alignSelf: 'flex-end',
+                //alignItems: 'center',
+              }}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                )
+              }}>
+              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 20, color: 'white' }}> Flip </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flex: 2.0,
+                alignSelf: 'flex-end',
+                //alignItems: 'center',
+              }}
+              onPress={() => takePicture()
+              }>
+              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 0, color: 'white' }}> Snap </Text>
+            </TouchableOpacity>
+          </View>
         </Camera>
       </View>
     );
@@ -240,7 +257,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderWidth: 1
   },
-  information: { 
+  information: {
     flex: 1,
     justifyContent: 'center',
     alignContent: 'center',
