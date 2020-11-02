@@ -3,7 +3,7 @@
 //changed some variable names and removed some parts to make clearer
 
 import React, { useEffect, useState } from 'react';
-import {StyleSheet, View, Text, Dimensions, 
+import {StyleSheet, View, Text, Dimensions, Image,
   Platform, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
@@ -13,6 +13,8 @@ export default function App() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [picTaken, setPicTaken] = useState(false);
+  const [picUri, setPicUri] = useState(null);
 
   // Screen Ratio for Android only
   const [ratio, setRatio] = useState('4:3');  // default is 4:3
@@ -79,9 +81,12 @@ export default function App() {
 
   const takePicture = async () => {
     if (camera) {
-        const options = { quality: 1, base64: true};
-        const data = await camera.takePictureAsync(options);
-        console.log(data);
+        const options = { quality: 0.25, base64: true};
+        let data = await camera.takePictureAsync(options);
+        console.log("Took picture");
+        //console.log(data);
+        setPicTaken(true);
+        setPicUri(data.uri);
     }
   };
 
@@ -97,7 +102,7 @@ export default function App() {
         <Text>No access to camera.</Text>
       </View>
     );
-  } else {
+  } else if (picTaken === false){
     return (
       <View style={styles.container}>
         <Camera
@@ -144,9 +149,22 @@ export default function App() {
         </Camera>
       </View>
     );
+  } else {
+    return (
+      <View style={styles.information}>
+        <Image
+        style={styles.logo}
+        source={{
+          uri: picUri,
+        }}
+      />
+      </View>
+    );
   }
 }
-
+const { height, width } = Dimensions.get('window');
+const h = Math.floor(height);
+const w = Math.floor(width);
 const styles = StyleSheet.create({
   information: { 
     flex: 1,
@@ -161,5 +179,9 @@ const styles = StyleSheet.create({
   },
   cameraPreview: {
     flex: 1,
+  },
+  logo: {
+    width: w,
+    height: h,
   }
 });
