@@ -1,11 +1,13 @@
 // In App.js in a new project
 
-import * as React from 'react';
+//import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, View, Text, Image, TextInput, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import * as Location from 'expo-location';
 
-// import React, { useEffect, useState } from 'react';
+
 import {
   Dimensions,
   Platform, TouchableOpacity
@@ -15,16 +17,44 @@ import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 
 function HomeScreen({ navigation }) {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [locationText, setLocationInfo] = useState("Searching");
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+
+      const here = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+      });
+
+      let cityInfo = {};
+      here.find(p => {
+        setLocationInfo(`Street: ${p.street} \n City: ${p.city} \n postal code: ${p.postalCode}`);
+      });
+    })();
+  }, []);
+
+
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Text>Snap & Go placeholder front Screen</Text>
+      <Text>{locationText}</Text>
     </View>
   );
 }
 
 function Login() {
-  const [value, onChangeUserText] = React.useState('');
-  const [password, onChangePasswordText] = React.useState('');
+  const [value, onChangeUserText] = useState('');
+  const [password, onChangePasswordText] = useState('');
 
   // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
@@ -95,18 +125,18 @@ function MyTabs() {
 }
 
 function snapCamera() {
-  const [hasCameraPermission, setHasCameraPermission] = React.useState(null);
-  const [camera, setCamera] = React.useState(null);
-  const [type, setType] = React.useState(Camera.Constants.Type.back);
+  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  const [camera, setCamera] = useState(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
 
   // Screen Ratio for Android only
-  const [ratio, setRatio] = React.useState('4:3');  // default is 4:3
+  const [ratio, setRatio] = useState('4:3');  // default is 4:3
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
-  const [isRatioSet, setIsRatioSet] = React.useState(false);
+  const [isRatioSet, setIsRatioSet] = useState(false);
 
   // on screen  load, ask for permission to use the camera
-  React.useEffect(() => {
+  useEffect(() => {
     async function getCameraStatus() {
       const { status } = await Permissions.askAsync(Permissions.CAMERA);
       setHasCameraPermission(status == 'granted');
