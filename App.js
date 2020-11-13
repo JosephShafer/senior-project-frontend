@@ -13,7 +13,7 @@ import {
   Platform, TouchableOpacity
 } from 'react-native';
 import { Camera } from 'expo-camera';
-// import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
 function HomeScreen({ navigation }) {
@@ -128,6 +128,8 @@ function snapCamera() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [picTaken, setPicTaken] = useState(false);
+  const [picUri, setPicUri] = useState(null);
 
   // Screen Ratio for Android only
   const [ratio, setRatio] = useState('4:3');  // default is 4:3
@@ -194,9 +196,12 @@ function snapCamera() {
 
   const takePicture = async () => {
     if (camera) {
-      const options = { quality: 1, base64: true };
-      const data = await camera.takePictureAsync(options);
-      console.log(data);
+      const options = { quality: 0.25, base64: true};
+      let data = await camera.takePictureAsync(options);
+      console.log("Took picture");
+      //console.log(data);
+      setPicTaken(true);
+      setPicUri(data.uri);
     }
   };
 
@@ -212,7 +217,7 @@ function snapCamera() {
         <Text>No access to camera.</Text>
       </View>
     );
-  } else {
+  } else if (picTaken === false){
     return (
       <View style={styles.container}>
         <Camera
@@ -225,38 +230,49 @@ function snapCamera() {
             setCamera(ref);
           }}>
           <View
+          style={{
+            flex: 1,
+            backgroundColor: 'transparent',
+            flexDirection: 'row',
+          }}>
+          <TouchableOpacity
             style={{
-              flex: 1,
-              backgroundColor: 'transparent',
-              flexDirection: 'row',
-            }}>
-            <TouchableOpacity
-              style={{
-                flex: 1.0,
-                alignSelf: 'flex-end',
-                //alignItems: 'center',
-              }}
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                )
-              }}>
-              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 20, color: 'white' }}> Flip </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                flex: 2.0,
-                alignSelf: 'flex-end',
-                //alignItems: 'center',
-              }}
-              onPress={() => takePicture()
-              }>
-              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 0, color: 'white' }}> Snap </Text>
-            </TouchableOpacity>
-          </View>
+              flex: 1.0,
+              alignSelf: 'flex-end',
+              //alignItems: 'center',
+            }}
+            onPress={() => {
+              setType(
+                type === Camera.Constants.Type.back
+                  ? Camera.Constants.Type.front
+                  : Camera.Constants.Type.back
+              )
+          }}>
+            <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 20, color: 'white' }}> Flip </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+          style={{
+            flex: 2.0,
+            alignSelf: 'flex-end',
+            //alignItems: 'center',
+          }}
+          onPress={() => takePicture()
+          }> 
+          <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 0, color: 'white' }}> Snap </Text>
+          </TouchableOpacity>
+        </View>
         </Camera>
+      </View>
+    );
+  } else {
+    return (
+      <View style={styles.information}>
+        <Image
+        style={styles.pic}
+        source={{
+          uri: picUri,
+        }}
+      />
       </View>
     );
   }
@@ -270,7 +286,9 @@ function App() {
   );
 }
 
-
+const { height, width } = Dimensions.get('window');
+const h = Math.floor(height);
+const w = Math.floor(width);
 const styles = StyleSheet.create({
   placeholderImage: {
     flex: 2,
@@ -300,6 +318,10 @@ const styles = StyleSheet.create({
   },
   cameraPreview: {
     flex: 1,
+  },
+  pic: {
+    width: w,
+    height: h,
   }
 
 });
