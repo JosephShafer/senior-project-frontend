@@ -5,7 +5,7 @@ import * as Location from 'expo-location';
 
 
 function HomeScreen({ navigation }) {
-  const [location, setLocation] = useState(null);
+  const [setLocationVar, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [locationText, setLocationInfo] = useState("Searching");
 
@@ -16,8 +16,10 @@ function HomeScreen({ navigation }) {
         setErrorMsg('Permission to access location was denied');
       }
 
-      location = await Location.getCurrentPositionAsync({});
+      let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+
+      //
 
       const here = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
