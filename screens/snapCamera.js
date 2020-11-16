@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Col, Row, Grid } from "react-native-easy-grid";
 
 import {
   Dimensions,
@@ -134,7 +136,11 @@ function snapCamera() {
                     : Camera.Constants.Type.back
                 )
               }}>
-              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 20, color: 'white' }}> Flip </Text>
+              <Ionicons
+                        name="md-reverse-camera"
+                        color="white"
+                        size={50}
+                    />
             </TouchableOpacity>
             <TouchableOpacity
               style={{
@@ -144,7 +150,11 @@ function snapCamera() {
               }}
               onPress={() => takePicture()
               }>
-              <Text style={{ fontSize: 18, marginBottom: 50, marginLeft: 0, color: 'white' }}> Snap </Text>
+              <Ionicons
+                        name="ios-camera"
+                        color="white"
+                        size={60}
+                    />
             </TouchableOpacity>
           </View>
         </Camera>
