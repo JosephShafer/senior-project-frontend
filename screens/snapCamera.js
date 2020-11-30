@@ -196,12 +196,23 @@ function snapCamera() {
             uri: picUri,
           }}
         />
+        <TouchableOpacity
+              style={{
+                flex: 1.0,
+                flexDirection: 'row',
+                alignSelf: 'flex-end',
+                //alignItems: 'center',
+              }}
+              onPress={() => setPicTaken(false)
+              }>
+              <Text>Retake picture</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 }
 const { height, width } = Dimensions.get('window');
-const h = Math.floor(height);
+const h = Math.floor(height)-100;
 const w = Math.floor(width);
 const styles = StyleSheet.create({
   information: {
