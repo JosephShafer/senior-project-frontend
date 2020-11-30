@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
 import snapCamera from './screens/snapCamera';
+import ResultsScreen from './screens/ResultsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -15,6 +16,8 @@ function MyTabs() {
     <Tab.Navigator>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Login" component={Login} />
+      {/* Results only part of router for testing */}
+      <Tab.Screen name="Results" component={ResultsScreen} />
       <Tab.Screen name="Camera" component={snapCamera} />
     </Tab.Navigator>
   );
