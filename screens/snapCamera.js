@@ -16,6 +16,8 @@ function snapCamera() {
   const [hasCameraPermission, setHasCameraPermission] = useState(null);
   const [camera, setCamera] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [flash, setFlash] = useState("off");
+  const [flashType, setFlashType] = useState("md-flash-off");
   const [picTaken, setPicTaken] = useState(false);
   const [picUri, setPicUri] = useState(null);
 
@@ -113,6 +115,7 @@ function snapCamera() {
           onCameraReady={setCameraReady}
           type={type}
           autoFocus={'on'}
+          flashMode={flash}
           ratio={ratio}
           ref={(ref) => {
             setCamera(ref);
@@ -144,16 +147,40 @@ function snapCamera() {
             </TouchableOpacity>
             <TouchableOpacity
               style={{
-                flex: 2.0,
+                flex: 1.0,
                 alignSelf: 'flex-end',
                 //alignItems: 'center',
               }}
               onPress={() => takePicture()
               }>
               <Ionicons
-                        name="ios-camera"
+                        name="md-camera"
                         color="white"
-                        size={60}
+                        size={50}
+                    />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                //flex: 0.5,
+                alignSelf: 'flex-end',
+                //alignItems: 'center',
+              }}
+              onPress={() => {
+                setFlash(
+                  flash === "off"
+                    ? "on"
+                    : "off"
+                );
+                setFlashType(
+                  flashType === "md-flash-off"
+                    ? "md-flash"
+                    : "md-flash-off"
+                );
+              }}>
+              <Ionicons
+                        name={flashType}
+                        color="white"
+                        size={50}
                     />
             </TouchableOpacity>
           </View>
