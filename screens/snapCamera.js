@@ -1,65 +1,66 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+// styling and background image
+import { View, Text, StyleSheet, Dimensions, Platform, 
+  TouchableOpacity, ImageBackground} from 'react-native';
+// camera, icons, and permissions
 import { Ionicons } from '@expo/vector-icons';
-import { Col, Row, Grid } from "react-native-easy-grid";
-
-import {
-  Dimensions,
-  Platform, TouchableOpacity
-} from 'react-native';
 import { Camera } from 'expo-camera';
-import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 
-
+// camera screen function
 function snapCamera() {
-  const [hasCameraPermission, setHasCameraPermission] = useState(null);
+  // Variables related to camera permission and functions
+  const [hasPermission, setHasPermission] = useState(null);
   const [camera, setCamera] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [cameraType, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState("off");
-  const [flashType, setFlashType] = useState("md-flash-off");
+  const [flashType, setFlashType] = useState("md-flash-off"); // For icon
+  
+  // Variables related to pictures 
   const [picTaken, setPicTaken] = useState(false);
   const [picUri, setPicUri] = useState(null);
 
-  // Screen Ratio for Android only
+  // Variables to get screen ratio for Android only
   const [ratio, setRatio] = useState('4:3');  // default is 4:3
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
 
-  // on screen  load, ask for permission to use the camera
+  // On screen load, ask for permission to use the camera
   useEffect(() => {
     async function getCameraStatus() {
       const { status } = await Permissions.askAsync(Permissions.CAMERA);
-      setHasCameraPermission(status == 'granted');
+      setHasPermission(status == 'granted');
     }
     getCameraStatus();
   }, []);
 
-  // set the camera ratio
-  // portrait mode only
+  // Set the best camera ratio (portrait mode only)
   const getRatio = async () => {
-    let chosenRatio = '4:3';  // Start with the default
-    // ratio is for Android only
+    // Start with the default ratio
+    let bestRatio = '4:3';
+
+    // Ratio is for Android only
     if (Platform.OS === 'android') {
-      //gets supported ratios
+      // Gets ratios supported by device
       const ratios = await camera.getSupportedRatiosAsync();
 
       let distances = {};
-      let decRatios = {};
+      let decimalRatios = {};
       let minDistance = null;
 
-      // goes through ratios and gets one closest to screen ratio
-      // uses width/height to choose the best one
+      // Goes through ratios and gets one closest to screen ratio
+      // Uses distance from screenRatio to choose the best one
       for (const ratio of ratios) {
-        const ratioVals = ratio.split(':');
-        const decRatio = parseInt(ratioVals[0]) / parseInt(ratioVals[1]);
-        decRatios[ratio] = decRatio;
+        const ratioParts = ratio.split(':');
+        const decimalRatio = parseInt(ratioParts[0]) / parseInt(ratioParts[1]);
+        decimalRatios[ratio] = decimalRatio;
 
-        // ratio can't be larger than the screen, so it grabs the closest
+        // Ratio can't be larger than the screen, so it grabs the closest
         // one that isn't bigger than the screen
-        const distance = screenRatio - decRatio;
-        distances[ratio] = decRatio;
+        // Uses smallest distance from screenRatio to choose best one
+        const distance = screenRatio - decimalRatio;
+        distances[ratio] = decimalRatio;
         if (minDistance == null) {
           minDistance = ratio;
         } else {
@@ -68,16 +69,16 @@ function snapCamera() {
           }
         }
       }
-      // set the best match
-      chosenRatio = minDistance;
-      setRatio(chosenRatio);
+      // Set the best ratio
+      bestRatio = minDistance;
+      setRatio(bestRatio);
 
-      // Flag set to calculate ratio only once
+      // Flag set to calculate the ratio only once
       setIsRatioSet(true);
     }
   };
 
-  // camera needs to be open when getting the supported ratios
+  // Camera needs to be open when getting the supported ratios
   const setCameraReady = async () => {
     if (!isRatioSet) {
       await getRatio();
@@ -89,95 +90,101 @@ function snapCamera() {
       const options = { quality: 0.25, base64: true };
       let data = await camera.takePictureAsync(options);
       console.log("Took picture");
-      //console.log(data);
       setPicTaken(true);
       setPicUri(data.uri);
     }
   };
 
-  if (hasCameraPermission === null) {
+  // Checks for camera permissions to return views
+  if (hasPermission === null) {
     return (
-      <View style={styles.information}>
+      <View style={{flex:1, flexDirection:"column"}}>
         <Text>Waiting for camera permissions.</Text>
       </View>
     );
-  } else if (hasCameraPermission === false) {
+  } else if (hasPermission === false) {
     return (
-      <View style={styles.information}>
+      <View style={{flex:1, flexDirection:"column"}}>
         <Text>No access to camera.</Text>
       </View>
     );
-  } else if (picTaken === false) {
+  // At this point camera permisson is granted
+  // So it checks if a picture has been taken
+  // If no picture has been taken, the camera screen is shown
+  } else if (picTaken === false) { 
     return (
-      <View style={styles.container}>
+      <View style={{flex:1}}>
         <Camera
-          style={styles.cameraPreview}
+          style={{flex: 1}}
           onCameraReady={setCameraReady}
-          type={type}
+          type={cameraType}
           autoFocus={'on'}
           flashMode={flash}
           ratio={ratio}
+          // ref set to "camera" 
           ref={(ref) => {
             setCamera(ref);
           }}>
-          <View
+          <View // View for icons used by camera screen
             style={{
               flex: 1,
               backgroundColor: 'transparent',
               flexDirection: 'row',
             }}>
-            <TouchableOpacity
+
+            <TouchableOpacity // Button to flip cameras
               style={{
                 flex: 1.0,
                 alignSelf: 'flex-end',
-                //alignItems: 'center',
               }}
               onPress={() => {
+                // Flips cameras 
                 setType(
-                  type === Camera.Constants.Type.back
+                  cameraType === Camera.Constants.Type.back
                     ? Camera.Constants.Type.front
                     : Camera.Constants.Type.back
                 )
               }}>
-              <Ionicons
+              <Ionicons // Icon for camera flipping button
                         name="md-reverse-camera"
                         color="white"
                         size={50}
                     />
             </TouchableOpacity>
-            <TouchableOpacity
+
+            <TouchableOpacity // Button to take pictures
               style={{
                 flex: 1.0,
                 alignSelf: 'flex-end',
-                //alignItems: 'center',
               }}
               onPress={() => takePicture()
               }>
-              <Ionicons
+              <Ionicons // Icon for picture taking button
                         name="md-camera"
                         color="white"
                         size={50}
                     />
             </TouchableOpacity>
-            <TouchableOpacity
+
+            <TouchableOpacity // Button for flash
               style={{
-                //flex: 0.5,
                 alignSelf: 'flex-end',
-                //alignItems: 'center',
               }}
               onPress={() => {
+                // Sets flash to on or off
                 setFlash(
                   flash === "off"
                     ? "on"
                     : "off"
                 );
+                // Sets flash button to on or off button icon
                 setFlashType(
                   flashType === "md-flash-off"
                     ? "md-flash"
                     : "md-flash-off"
                 );
               }}>
-              <Ionicons
+              <Ionicons // Icon for flash 
                         name={flashType}
                         color="white"
                         size={50}
@@ -187,53 +194,41 @@ function snapCamera() {
         </Camera>
       </View>
     );
-  } else {
+  // Shows image preview if one was taken
+} else { 
     return (
-      <View style={styles.information}>
-        <Image
-          style={styles.pic}
+      <View style={{flex:1, flexDirection:"column"}}>
+        <ImageBackground
+          style={{
+            flex: 1,
+            resizeMode: 'cover',
+            justifyContent: 'center'
+          }}
           source={{
             uri: picUri,
           }}
-        />
-        <TouchableOpacity
+        >
+          <View // View for image retake option 
+          style={{flex: 1, flexDirection: "column-reverse"}}>
+           <TouchableOpacity // Icon & text both work to retake image
               style={{
-                flex: 1.0,
-                flexDirection: 'row',
-                alignSelf: 'flex-end',
-                //alignItems: 'center',
+                alignItems: "center",
               }}
               onPress={() => setPicTaken(false)
               }>
-              <Text>Retake picture</Text>
-        </TouchableOpacity>
+                <Ionicons // Icon for camera flipping button
+                        name="md-reverse-camera"
+                        color="white"
+                        size={50}
+                    />
+                <Text style={{color: "white", fontSize: 24}}>Retake picture</Text>
+          </TouchableOpacity>
+          
+          </View>
+        </ImageBackground>
       </View>
     );
   }
 }
-const { height, width } = Dimensions.get('window');
-const h = Math.floor(height)-100;
-const w = Math.floor(width);
-const styles = StyleSheet.create({
-  information: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    justifyContent: 'center',
-  },
-  cameraPreview: {
-    flex: 1,
-  },
-  pic: {
-    width: w,
-    height: h,
-  }
-
-});
 
 export default snapCamera;
