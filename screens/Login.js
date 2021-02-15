@@ -20,7 +20,7 @@ function Login() {
   }
 
   return (
-    <View style={{ flex: 1, flexDirection: 'column', justifyContent: "space-between" }}>
+    <View style={{ flex: 1, flexDirection: 'column', justifyContent: "space-between", paddingTop: 25}}>
 
       <Text style={{ flex: .5, alignItems: "center", textAlign: "center", fontSize: 50 }}>Snap & Go</Text>
 

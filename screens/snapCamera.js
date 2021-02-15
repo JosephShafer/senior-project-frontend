@@ -6,6 +6,7 @@ import { View, Text, StyleSheet, Dimensions, Platform,
 import { Ionicons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 // camera screen function
 function snapCamera() {
@@ -87,11 +88,16 @@ function snapCamera() {
 
   const takePicture = async () => {
     if (camera) {
-      const options = { quality: 0.25, base64: true };
+      const options = { quality: 0.01, base64: true };
       let data = await camera.takePictureAsync(options);
       console.log("Took picture");
       setPicTaken(true);
-      setPicUri(data.uri);
+      let data2 = await ImageManipulator.manipulateAsync(
+        data.uri,
+        [],
+        { compress: 0 }
+      );
+      setPicUri(data2.uri);
     }
   };
 
