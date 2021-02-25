@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
 import snapCamera from './screens/snapCamera';
 import ResultsScreen from './screens/ResultsScreen';
+import Account from './screens/Account';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,8 @@ function MyTabs() {
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Login" component={Login} />
       {/* Results only part of router for testing */}
+      <Tab.Screen name="Account" component={Account} />
+
       <Tab.Screen name="Results" component={ResultsScreen} />
       <Tab.Screen name="Camera" component={snapCamera} />
     </Tab.Navigator>
