@@ -140,8 +140,13 @@ function snapCamera() {
 
             <TouchableOpacity // Button to flip cameras
               style={{
-                flex: 1.0,
+                flex: 0.2,
                 alignSelf: 'flex-end',
+                backgroundColor: 'red',
+                paddingLeft: 12,
+                paddingRight: 15,
+                paddingBottom: 10,
+                paddingTop: 10,
               }}
               onPress={() => {
                 // Flips cameras 
@@ -157,11 +162,23 @@ function snapCamera() {
                         size={50}
                     />
             </TouchableOpacity>
+            <TouchableOpacity style={{
+                flex: 0.5,
+                alignSelf: 'flex-end',
+                backgroundColor: 'white',
+              }}>
+                <Text style={{fontSize:35,}}>space</Text>
+                </TouchableOpacity>
 
             <TouchableOpacity // Button to take pictures
               style={{
-                flex: 1.0,
+                flex: 0.2,
                 alignSelf: 'flex-end',
+                backgroundColor: 'red',
+                paddingLeft: 12,
+                paddingRight: 15,
+                paddingBottom: 10,
+                paddingTop: 10,
               }}
               onPress={() => takePicture()
               }>
@@ -171,10 +188,23 @@ function snapCamera() {
                         size={50}
                     />
             </TouchableOpacity>
+            <TouchableOpacity style={{
+                flex: 0.5,
+                alignSelf: 'flex-end',
+                backgroundColor: 'white',
+              }}>
+                <Text style={{fontSize:35,}}>space</Text>
+                </TouchableOpacity>
 
             <TouchableOpacity // Button for flash
               style={{
+                flex: 0.2,
                 alignSelf: 'flex-end',
+                backgroundColor: 'red',
+                paddingLeft: 12,
+                paddingRight: 8,
+                paddingBottom: 10,
+                paddingTop: 10,
               }}
               onPress={() => {
                 // Sets flash to on or off
