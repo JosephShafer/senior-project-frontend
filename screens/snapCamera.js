@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
-import { View, Text, StyleSheet, Dimensions, Platform, 
+import { View, Text, Dimensions, Platform, 
   TouchableOpacity, ImageBackground} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
+import * as FileSystem from 'expo-file-system';
 
 // camera screen function
 function snapCamera() {
@@ -88,16 +89,42 @@ function snapCamera() {
 
   const takePicture = async () => {
     if (camera) {
-      const options = { quality: 0.01, base64: true };
-      let data = await camera.takePictureAsync(options);
-      console.log("Took picture");
-      setPicTaken(true);
-      let data2 = await ImageManipulator.manipulateAsync(
-        data.uri,
-        [],
-        { compress: 0 }
-      );
-      setPicUri(data2.uri);
+      // Compresses less for android since only camera1 api is used
+      // Camera1 api produces lower quality images than camera2 api
+      // So Android images need less compression than higher quality iOS images
+      if (Platform.OS === 'android') {
+        // Quality option does compression for Android
+        const options = { quality: 0.15, base64: true };
+        let data = await camera.takePictureAsync(options);
+        // Info printed to console
+        console.log("Took picture");
+        let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets picture taken flag to true to show preview and sets image uri
+        setPicTaken(true);
+        setPicUri(data.uri);
+      } else {
+        // Compression for iOS is done here, it compresses the image twice        
+        const options = { quality: 0.01, base64: true };
+        let data = await camera.takePictureAsync(options);
+        // Info printed to the console
+        console.log("Took picture");
+        let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets picture taken flag to true to show preview
+        setPicTaken(true);
+        // Second time image is compressed since iOS images are larger
+        const data2 = await ImageManipulator.manipulateAsync(
+          data.uri,
+          [],
+          { compress: 0.01}
+        );
+        // Info printed to console
+        fileInfo = await FileSystem.getInfoAsync(data2.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets image uri
+        setPicUri(data2.uri);
+      }
     }
   };
 
@@ -142,7 +169,7 @@ function snapCamera() {
               style={{
                 flex: 0.2,
                 alignSelf: 'flex-end',
-                backgroundColor: 'red',
+                backgroundColor: 'transparent',
                 paddingLeft: 12,
                 paddingRight: 15,
                 paddingBottom: 10,
@@ -165,16 +192,15 @@ function snapCamera() {
             <TouchableOpacity style={{
                 flex: 0.5,
                 alignSelf: 'flex-end',
-                backgroundColor: 'white',
+                backgroundColor: 'transparent',
               }}>
-                <Text style={{fontSize:35,}}>space</Text>
-                </TouchableOpacity>
+            </TouchableOpacity>
 
             <TouchableOpacity // Button to take pictures
               style={{
                 flex: 0.2,
                 alignSelf: 'flex-end',
-                backgroundColor: 'red',
+                backgroundColor: 'transparent',
                 paddingLeft: 12,
                 paddingRight: 15,
                 paddingBottom: 10,
@@ -189,18 +215,17 @@ function snapCamera() {
                     />
             </TouchableOpacity>
             <TouchableOpacity style={{
-                flex: 0.5,
+                flex: 0.4,
                 alignSelf: 'flex-end',
-                backgroundColor: 'white',
+                backgroundColor: 'transparent',
               }}>
-                <Text style={{fontSize:35,}}>space</Text>
-                </TouchableOpacity>
+            </TouchableOpacity>
 
             <TouchableOpacity // Button for flash
               style={{
                 flex: 0.2,
                 alignSelf: 'flex-end',
-                backgroundColor: 'red',
+                backgroundColor: 'transparent',
                 paddingLeft: 12,
                 paddingRight: 8,
                 paddingBottom: 10,
@@ -233,7 +258,7 @@ function snapCamera() {
   // Shows image preview if one was taken
 } else { 
     return (
-      <View style={{flex:1, flexDirection:"column"}}>
+      <View style={{flex:1}}>
         <ImageBackground
           style={{
             flex: 1,
@@ -245,10 +270,20 @@ function snapCamera() {
           }}
         >
           <View // View for image retake option 
-          style={{flex: 1, flexDirection: "column-reverse"}}>
+          style={{flex: 1, flexDirection: "row"}}>
+           <TouchableOpacity style={{ // Used to fix icon clickable area bug
+                flex: 0.3,
+                alignSelf: 'flex-end',
+                backgroundColor: 'transparent',
+              }}>
+           </TouchableOpacity>   
            <TouchableOpacity // Icon & text both work to retake image
               style={{
+                flex: 0.4,
+                alignSelf: 'flex-end',
                 alignItems: "center",
+                backgroundColor: 'transparent',
+                
               }}
               onPress={() => setPicTaken(false)
               }>
@@ -257,8 +292,14 @@ function snapCamera() {
                         color="white"
                         size={50}
                     />
-                <Text style={{color: "white", fontSize: 24}}>Retake picture</Text>
+                <Text style={{color: "white", fontSize: 24, textAlign: "center"}}>Retake picture</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={{ // Used to fix icon clickable area bug
+                flex: 0.3,
+                alignSelf: 'flex-end',
+                backgroundColor: 'transparent',
+              }}>
+          </TouchableOpacity> 
           
           </View>
         </ImageBackground>
