@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Button, View, Text, TextInput, Image, StyleSheet } from 'react-native';
 
+import config from '../config';
+
 function Login() {
   const [value, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
 
   // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
-    const url = "http://ec2-3-83-108-10.compute-1.amazonaws.com:3000/";
+    const url = config.AWS_API_URL;
     try {
       let response = await fetch(url);
       let fetchData = await response.text();
