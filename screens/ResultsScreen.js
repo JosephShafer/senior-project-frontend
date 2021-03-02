@@ -28,7 +28,7 @@ function ResultsScreen() {
 
   // https://www.youtube.com/watch?v=IuYo009yc8w
   return (
-    <View>
+    <View style={{paddingTop:40}}>
     {/* TODO: add on scroll down disappear, on scrollup reappear */}
       <TextInput
         style={styles.myTextInput}

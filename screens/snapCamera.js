@@ -6,6 +6,8 @@ import { View, Text, StyleSheet, Dimensions, Platform,
 import { Ionicons } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
+import * as ImageManipulator from 'expo-image-manipulator';
+import * as FileSystem from 'expo-file-system';
 
 // camera screen function
 function snapCamera() {
@@ -87,11 +89,42 @@ function snapCamera() {
 
   const takePicture = async () => {
     if (camera) {
-      const options = { quality: 0.25, base64: true };
-      let data = await camera.takePictureAsync(options);
-      console.log("Took picture");
-      setPicTaken(true);
-      setPicUri(data.uri);
+      // Compresses less for android since only camera1 api is used
+      // Camera1 api produces lower quality images than camera2 api
+      // So Android images need less compression than higher quality iOS images
+      if (Platform.OS === 'android') {
+        // Quality option does compression for Android
+        const options = { quality: 0.15, base64: true };
+        let data = await camera.takePictureAsync(options);
+        // Info printed to console
+        console.log("Took picture");
+        let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets picture taken flag to true to show preview and sets image uri
+        setPicTaken(true);
+        setPicUri(data.uri);
+      } else {
+        // Compression for iOS is done here, it compresses the image twice        
+        const options = { quality: 0.01, base64: true };
+        let data = await camera.takePictureAsync(options);
+        // Info printed to the console
+        console.log("Took picture");
+        let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets picture taken flag to true to show preview
+        setPicTaken(true);
+        // Second time image is compressed since iOS images are larger
+        const data2 = await ImageManipulator.manipulateAsync(
+          data.uri,
+          [],
+          { compress: 0.01}
+        );
+        // Info printed to console
+        fileInfo = await FileSystem.getInfoAsync(data2.uri);
+        console.log(fileInfo.size + " bytes");
+        // Sets image uri
+        setPicUri(data2.uri);
+      }
     }
   };
 
@@ -133,10 +166,7 @@ function snapCamera() {
             }}>
 
             <TouchableOpacity // Button to flip cameras
-              style={{
-                flex: 1.0,
-                alignSelf: 'flex-end',
-              }}
+              style={[ styles.icons, styles.touchables, {flex: 0.2,}]}
               onPress={() => {
                 // Flips cameras 
                 setType(
@@ -152,11 +182,12 @@ function snapCamera() {
                     />
             </TouchableOpacity>
 
+            <TouchableOpacity // Empty space so icon buttons work properly
+            style={[styles.touchables, {flex: 0.5,}]}>
+            </TouchableOpacity>
+
             <TouchableOpacity // Button to take pictures
-              style={{
-                flex: 1.0,
-                alignSelf: 'flex-end',
-              }}
+              style={[styles.icons, styles.touchables, {flex: 0.2,}]}
               onPress={() => takePicture()
               }>
               <Ionicons // Icon for picture taking button
@@ -165,11 +196,15 @@ function snapCamera() {
                         size={50}
                     />
             </TouchableOpacity>
+            
+            <TouchableOpacity // Empty space so icon buttons work properly
+            style={[styles.touchables, {flex: 0.4,}]}>
+            </TouchableOpacity>
 
             <TouchableOpacity // Button for flash
-              style={{
-                alignSelf: 'flex-end',
-              }}
+              style={[styles.icons, styles.touchables, 
+                     {flex: 0.2, paddingRight: 8,}]
+                    }
               onPress={() => {
                 // Sets flash to on or off
                 setFlash(
@@ -197,7 +232,7 @@ function snapCamera() {
   // Shows image preview if one was taken
 } else { 
     return (
-      <View style={{flex:1, flexDirection:"column"}}>
+      <View style={{flex:1}}>
         <ImageBackground
           style={{
             flex: 1,
@@ -209,11 +244,14 @@ function snapCamera() {
           }}
         >
           <View // View for image retake option 
-          style={{flex: 1, flexDirection: "column-reverse"}}>
-           <TouchableOpacity // Icon & text both work to retake image
-              style={{
-                alignItems: "center",
-              }}
+          style={{flex: 1, flexDirection: "row"}}>
+           
+            <TouchableOpacity // Empty space so icon buttons work properly
+            style={[styles.touchables, {flex: 0.3,}]}>
+            </TouchableOpacity> 
+
+            <TouchableOpacity // Icon & text both work to retake image
+              style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
               onPress={() => setPicTaken(false)
               }>
                 <Ionicons // Icon for camera flipping button
@@ -221,8 +259,12 @@ function snapCamera() {
                         color="white"
                         size={50}
                     />
-                <Text style={{color: "white", fontSize: 24}}>Retake picture</Text>
-          </TouchableOpacity>
+                <Text style={{color: "white", fontSize: 24, textAlign: "center"}}>Retake picture</Text>
+            </TouchableOpacity>
+          
+            <TouchableOpacity // Empty space so icon buttons work properly
+            style={[styles.touchables, {flex: 0.3,}]}>
+            </TouchableOpacity>  
           
           </View>
         </ImageBackground>
@@ -230,5 +272,18 @@ function snapCamera() {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  icons: {
+    paddingLeft: 12,
+    paddingRight: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+  },
+  touchables: {
+    alignSelf: 'flex-end',
+    backgroundColor: 'transparent',
+  },
+});
 
 export default snapCamera;
