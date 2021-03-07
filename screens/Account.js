@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
-import config from '../config';
+import config from '../config.json';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -16,7 +16,7 @@ const lastFewSearches = [{name: 'yarn', location: 'target'}, {name: 'scissors', 
 
 function Account() {
   const [request, response, promptAsync] = Google.useAuthRequest({
-    expoClientId: config.GOOGLE_CLIENT_ID,
+    expoClientId: config.GOOGLE_CLIENT_ID.key,
   });
 
   React.useEffect(() => {
@@ -43,7 +43,7 @@ function Account() {
         title="Login"
         onPress={() => {
           promptAsync();
-          console.log(config.GOOGLE_CLIENT_ID);
+          console.log(config.GOOGLE_CLIENT_ID.key);
         }}
       />
     );
