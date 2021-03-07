@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import { Button, View, Text, TextInput, Image, StyleSheet } from 'react-native';
+import { Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
 
-import config from '../config';
+import config from '../config.json';
 
 function Login() {
   const [value, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
+  const [showImage, setShowImage] = useState(true);
 
   // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
-    const url = config.AWS_API_URL;
+    const url = config.AWS.url;
     try {
       let response = await fetch(url);
       let fetchData = await response.text();
@@ -21,20 +22,26 @@ function Login() {
     }
   }
 
+  const hideImage = () =>{
+      setShowImage(false);
+
+  }
+
   return (
-    <View style={{ flex: 1, flexDirection: 'column', justifyContent: "space-between" }}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.loginContainer}>
 
-      <Text style={{ flex: .5, alignItems: "center", textAlign: "center", fontSize: 50 }}>Snap & Go</Text>
+      <Text style={styles.titleText}>Snap & Go</Text>
 
-      <Image
+      {showImage ? ( <Image
         style={styles.placeholderImage}
         source={{
           uri: 'https://reactnative.dev/img/tiny_logo.png',
         }}
-      />
+      /> ) : null }
 
-
-      <View style={{ flex: 1, flexDirection: "column", alignItems: "center" }}>
+      <ScrollView contentContainerStyle={styles.textBoxContainer}>
         <TextInput
           focus
           autoCompleteType={"username"}
@@ -42,8 +49,8 @@ function Login() {
           onChangeText={text => onChangeUserText(text)}
           value={value}
           placeholder={'Username'}
+          onPress={() => setShowImage(false)}
         />
-
         <TextInput
           secureTextEntry
           style={styles.textBox}
@@ -51,33 +58,56 @@ function Login() {
           value={password}
           placeholder={'Password'}
         />
-      </View>
-      <View style={{ flex: .5 }}>
+        <View style={styles.buttonContainer}>
         <Button
           title="Login"
           onPress={submitInfo}
         />
       </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  loginContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: "space-between",
+    paddingTop: 25
+  },
+  titleText: {
+    alignItems: "center",
+    textAlign: "center",
+    fontSize: 50,
+    paddingBottom: 0,
+  },
   placeholderImage: {
-    flex: 2,
-    marginTop: 10,
+    flex: 1,
+    marginTop: 0,
     height: undefined,
     width: undefined,
     resizeMode: 'contain',
+  },
+
+  textBoxContainer: {
+    flex: 1.5,
+    alignItems: 'center',
+    flexDirection: "column",
+    paddingVertical: 20
   },
   textBox: {
     height: 40,
     width: '90%',
     marginTop: 20,
     alignItems: 'center',
-    borderColor: 'gray',
-    borderWidth: 1
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1
   },
+  buttonContainer: {
+    flex: 1
+  }
+
 });
 
 export default Login;
