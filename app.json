@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "senior-project",
     "name": "my-app",
     "slug": "my-app",
     "scheme": "my-app-redirect",

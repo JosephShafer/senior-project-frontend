@@ -20,7 +20,6 @@ function MyTabs() {
       <Tab.Screen name="Login" component={Login} />
       {/* Results only part of router for testing */}
       <Tab.Screen name="Account" component={Account} />
-
       <Tab.Screen name="Results" component={ResultsScreen} />
       <Tab.Screen name="Camera" component={snapCamera} />
     </Tab.Navigator>
