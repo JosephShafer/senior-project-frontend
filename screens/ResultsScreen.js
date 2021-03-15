@@ -22,7 +22,7 @@ function ResultsScreen() {
 
   // https://www.youtube.com/watch?v=IuYo009yc8w
   return (
-    <View style={{paddingTop:40}}>
+    <View>
       <FlatList
         data={results}
         keyExtractor={(item) => 'key' + item.id}

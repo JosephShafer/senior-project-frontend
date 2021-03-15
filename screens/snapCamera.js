@@ -9,8 +9,26 @@ import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 
+// ResultsScreen navigation
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import ResultsScreen from './ResultsScreen';
+
+// Variables for buttons to disable them when loading screen is shown
+let buttonOpacity = 1;
+let buttonOff = false;
+
+// function that returns ResultsScreen in a view
+function Results() {
+  return (
+    <View>
+      <ResultsScreen/>
+    </View>
+  );
+}
+
 // camera screen function
-function snapCamera() {
+function cameraSnap({ navigation }) {
   // Variables related to camera permission and functions
   const [hasPermission, setHasPermission] = useState(null);
   const [camera, setCamera] = useState(null);
@@ -21,6 +39,7 @@ function snapCamera() {
   // Variables related to pictures 
   const [picTaken, setPicTaken] = useState(false);
   const [picUri, setPicUri] = useState(null);
+  const [backUri, setBackUri] = useState(null);
 
   // Variables to get screen ratio for Android only
   const [ratio, setRatio] = useState('4:3');  // default is 4:3
@@ -88,6 +107,7 @@ function snapCamera() {
   };
 
   const takePicture = async () => {
+    setBackUri(null);
     if (camera) {
       // Compresses less for android since only camera1 api is used
       // Camera1 api produces lower quality images than camera2 api
@@ -103,6 +123,7 @@ function snapCamera() {
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
         setPicUri(data.uri);
+        setBackUri(data.uri);
       } else {
         // Compression for iOS is done here, it compresses the image twice        
         const options = { quality: 0.01, base64: true };
@@ -124,9 +145,47 @@ function snapCamera() {
         console.log(fileInfo.size + " bytes");
         // Sets image uri
         setPicUri(data2.uri);
+        setBackUri(data2.uri);
       }
     }
   };
+
+  // Loads the ResultsScreen after a certain time
+  const loadResultsScreen = async () => {
+    setTimeout(
+      () => { navigation.navigate("Results") },
+      5000
+    )
+  };
+
+  // Changes the background image to temporarily simulate an ad
+  function loadingAd() {
+    setBackUri("https://media2.giphy.com/media/l46CyJmS9KUbokzsI/giphy.gif");
+  }
+
+  // Currently handles the results loading process (will update when ready)
+  function loadResults() {
+    buttonOpacity = 0;
+    buttonOff = true;
+    
+    loadingAd();
+    loadResultsScreen();
+    
+    // Timers set to revert changes made to touchable opacities
+    setTimeout(
+      () => { setBackUri(picUri) },
+      6000
+    )
+    setTimeout(
+      () => { buttonOpacity = 1},
+      1000
+    )
+    setTimeout(
+      () => { buttonOff = false},
+      1000
+    )
+    
+  }
 
   // Checks for camera permissions to return views
   if (hasPermission === null) {
@@ -230,6 +289,7 @@ function snapCamera() {
       </View>
     );
   // Shows image preview if one was taken
+  // Also shows results page when ready
 } else { 
     return (
       <View style={{flex:1}}>
@@ -240,7 +300,7 @@ function snapCamera() {
             justifyContent: 'center'
           }}
           source={{
-            uri: picUri,
+            uri: backUri,
           }}
         >
           <View // View for image retake option 
@@ -252,20 +312,34 @@ function snapCamera() {
 
             <TouchableOpacity // Icon & text both work to retake image
               style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
+              disabled = {buttonOff}
               onPress={() => setPicTaken(false)
               }>
                 <Ionicons // Icon for camera flipping button
+                        style={{opacity: buttonOpacity,}}
                         name="md-reverse-camera"
                         color="white"
                         size={50}
                     />
-                <Text style={{color: "white", fontSize: 24, textAlign: "center"}}>Retake picture</Text>
+                <Text style={{color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity,}}>
+                  Retake picture
+                </Text>
             </TouchableOpacity>
           
             <TouchableOpacity // Empty space so icon buttons work properly
             style={[styles.touchables, {flex: 0.3,}]}>
             </TouchableOpacity>  
-          
+
+            <TouchableOpacity // Icon & text both work to load results
+              style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
+              disabled = {buttonOff}
+              onPress={() => loadResults()
+              }>
+                <Text style={{color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity,}}>
+                  Results
+                </Text>
+            </TouchableOpacity>
+
           </View>
         </ImageBackground>
       </View>
@@ -273,6 +347,7 @@ function snapCamera() {
   }
 }
 
+// Stylesheet for touchable opacities
 const styles = StyleSheet.create({
   icons: {
     paddingLeft: 12,
@@ -285,5 +360,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
 });
+
+
+// Below area is what makes the possible screens for tab
+const Stack = createStackNavigator();
+
+function snapCamera() {
+  return (
+    <NavigationContainer independent={true}>
+      <Stack.Navigator initialRouteName="Camera">
+        <Stack.Screen name="Camera" component={cameraSnap} />
+        <Stack.Screen name="Results" component={Results} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
 
 export default snapCamera;
