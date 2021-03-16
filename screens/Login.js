@@ -1,12 +1,44 @@
 import React, { useState } from 'react';
 import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
-import AppLoading from 'expo-app-loading';
+// import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
+import AccountCreation from './AccountCreation';
 
 import config from '../config.json';
 
-function Login() {
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+const Stack = createStackNavigator();
+
+function MyStack() {
+  return (
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen name="Login" component={mainLoginView} />
+      <Stack.Screen name="Create Account" component={Create} />
+    </Stack.Navigator>
+  );
+}
+
+function Login(){
+  return (
+    <NavigationContainer independent={true}>
+      <MyStack />
+    </NavigationContainer>
+  );
+}
+
+function Create(){
+  return (
+    <View>
+      <AccountCreation />
+    </View>
+  );
+}
+
+
+
+function mainLoginView({ navigation }) {
   const [value, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
@@ -51,7 +83,6 @@ function Login() {
             onChangeText={text => onChangeUserText(text)}
             value={value}
             placeholder={'Username'}
-            onPress={() => setShowImage(false)}
           />
           <TextInput
             secureTextEntry
@@ -71,7 +102,7 @@ function Login() {
 
 
             <TouchableOpacity
-              onPress={submitInfo}
+              onPress={()=> navigation.navigate("Create Account")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign Up </Text>
