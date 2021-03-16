@@ -14,6 +14,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import ResultsScreen from './ResultsScreen';
 
+import config from './config.json';
+import googleVision from './ApiSend.js';
+
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
 let buttonOff = false;
@@ -118,13 +121,21 @@ function cameraSnap({ navigation }) {
         let data = await camera.takePictureAsync(options);
         // Info printed to console
         console.log("Took picture");
-        let fileInfo = await FileSystem.getInfoAsync(data.uri);
         console.log(fileInfo.size + " bytes");
+        let fileInfo = await FileSystem.getInfoAsync(data.uri);
         //console.log(data.base64);
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
         setPicUri(data.uri);
         setBackUri(data.uri);
+
+        // Image passed to web crawler
+        try{
+          let res = await googleVision(data.base64);
+          //console.log("API's strongest guess: " + res);
+        } catch(err) {
+          console.log(err);
+        }
 
       } else {
         // Compression for iOS is done here, it compresses the image twice        
@@ -151,6 +162,14 @@ function cameraSnap({ navigation }) {
         // Sets image uri
         setPicUri(data2.uri);
         setBackUri(data2.uri);
+
+        // Image passed to web crawler
+        try{
+          let res = await googleVision(data2.base64);
+          //console.log("API's strongest guess: " + res);
+        } catch(err) {
+          console.log(err);
+        }
 
       }
     }
