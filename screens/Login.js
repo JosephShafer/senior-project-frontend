@@ -7,38 +7,7 @@ import AccountCreation from './AccountCreation';
 
 import config from '../config.json';
 
-import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
-const Stack = createStackNavigator();
-
-function MyStack() {
-  return (
-    <Stack.Navigator initialRouteName="Login">
-      <Stack.Screen name="Login" component={mainLoginView} />
-      <Stack.Screen name="Create Account" component={Create} />
-    </Stack.Navigator>
-  );
-}
-
-function Login(){
-  return (
-    <NavigationContainer independent={true}>
-      <MyStack />
-    </NavigationContainer>
-  );
-}
-
-function Create(){
-  return (
-    <View>
-      <AccountCreation />
-    </View>
-  );
-}
-
-
-
-function mainLoginView({ navigation }) {
+function Login({ navigation }) {
   const [value, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
@@ -102,7 +71,7 @@ function mainLoginView({ navigation }) {
 
 
             <TouchableOpacity
-              onPress={()=> navigation.navigate("Create Account")}
+              onPress={()=> navigation.push("AccountCreation")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign Up </Text>

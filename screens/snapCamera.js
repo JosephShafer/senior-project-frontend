@@ -9,26 +9,26 @@ import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 
-// ResultsScreen navigation
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+// // ResultsScreen navigation
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
 import ResultsScreen from './ResultsScreen';
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
 let buttonOff = false;
 
-// function that returns ResultsScreen in a view
-function Results() {
-  return (
-    <View>
-      <ResultsScreen/>
-    </View>
-  );
-}
+// // function that returns ResultsScreen in a view
+// function Results() {
+//   return (
+//     <View>
+//       <ResultsScreen/>
+//     </View>
+//   );
+// }
 
 // camera screen function
-function cameraSnap({ navigation }) {
+function snapCamera({ navigation }) {
   // Variables related to camera permission and functions
   const [hasPermission, setHasPermission] = useState(null);
   const [camera, setCamera] = useState(null);
@@ -159,7 +159,7 @@ function cameraSnap({ navigation }) {
   // Loads the ResultsScreen after a certain time
   const loadResultsScreen = async () => {
     setTimeout(
-      () => { navigation.navigate("Results") },
+      () => { navigation.push("Results") },
       5000
     )
   };
@@ -375,18 +375,18 @@ const styles = StyleSheet.create({
 });
 
 
-// Below area is what makes the possible screens for tab
-const Stack = createStackNavigator();
+// // Below area is what makes the possible screens for tab
+// const Stack = createStackNavigator();
 
-function snapCamera() {
-  return (
-    <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="Camera">
-        <Stack.Screen name="Camera" component={cameraSnap} />
-        <Stack.Screen name="Results" component={Results} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
+// function snapCamera() {
+//   return (
+//     <NavigationContainer independent={true}>
+//       <Stack.Navigator initialRouteName="Camera">
+//         <Stack.Screen name="Camera" component={cameraSnap} />
+//         <Stack.Screen name="Results" component={Results} />
+//       </Stack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
 
 export default snapCamera;
