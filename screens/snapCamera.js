@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Platform, 
   TouchableOpacity, ImageBackground} from 'react-native';
 // camera, icons, and permissions
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -124,6 +124,7 @@ function cameraSnap({ navigation }) {
         setPicTaken(true);
         setPicUri(data.uri);
         setBackUri(data.uri);
+
       } else {
         // Compression for iOS is done here, it compresses the image twice        
         const options = { quality: 0.01, base64: true };
@@ -146,6 +147,7 @@ function cameraSnap({ navigation }) {
         // Sets image uri
         setPicUri(data2.uri);
         setBackUri(data2.uri);
+
       }
     }
   };
@@ -187,6 +189,7 @@ function cameraSnap({ navigation }) {
     
   }
 
+  // Main Functionality of function/screen is below
   // Checks for camera permissions to return views
   if (hasPermission === null) {
     return (
@@ -307,7 +310,7 @@ function cameraSnap({ navigation }) {
           style={{flex: 1, flexDirection: "row"}}>
            
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.3,}]}>
+            style={[styles.touchables, {flex: 0.1,}]}>
             </TouchableOpacity> 
 
             <TouchableOpacity // Icon & text both work to retake image
@@ -327,7 +330,7 @@ function cameraSnap({ navigation }) {
             </TouchableOpacity>
           
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.3,}]}>
+            style={[styles.touchables, {flex: 0.1,}]}>
             </TouchableOpacity>  
 
             <TouchableOpacity // Icon & text both work to load results
@@ -335,6 +338,12 @@ function cameraSnap({ navigation }) {
               disabled = {buttonOff}
               onPress={() => loadResults()
               }>
+                <Foundation 
+                        style={{opacity: buttonOpacity,}}
+                        name="results"
+                        color="white"
+                        size={50} 
+                    />
                 <Text style={{color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity,}}>
                   Results
                 </Text>
