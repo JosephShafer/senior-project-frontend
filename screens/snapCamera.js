@@ -120,6 +120,7 @@ function cameraSnap({ navigation }) {
         console.log("Took picture");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
         console.log(fileInfo.size + " bytes");
+        //console.log(data.base64);
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
         setPicUri(data.uri);
@@ -144,6 +145,9 @@ function cameraSnap({ navigation }) {
         // Info printed to console
         fileInfo = await FileSystem.getInfoAsync(data2.uri);
         console.log(fileInfo.size + " bytes");
+        // Redid base64 encoding to be able to pass it through web crawler
+        data2.base64 = await FileSystem.readAsStringAsync(data2.uri, { encoding: 'base64'  });
+        //console.log(data2.base64);
         // Sets image uri
         setPicUri(data2.uri);
         setBackUri(data2.uri);
