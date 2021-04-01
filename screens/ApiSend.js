@@ -9,7 +9,7 @@ import {
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
-import config from './config.json';
+import config from '../config.json';
 
 let loading = false;
 let apiResult = undefined;
@@ -28,6 +28,7 @@ async function callWebCrawler(target) {
 			}),
 		});
 		var responseJson = await response.json();
+                return responseJson;
 		console.log("Connection successfully made.");
 	} catch(err) {
 		console.log(err);
@@ -77,7 +78,8 @@ async function googleVision(base64) {
                 console.log(error);
         }
 	loadingc = false;
-	await callWebCrawler(apiResult);
+	let results = await callWebCrawler(apiResult);
+        return results;
 }
 
 export default googleVision;

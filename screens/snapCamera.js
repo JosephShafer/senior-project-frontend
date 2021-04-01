@@ -14,7 +14,7 @@ import * as FileSystem from 'expo-file-system';
 // import { createStackNavigator } from '@react-navigation/stack';
 import ResultsScreen from './ResultsScreen';
 
-import config from './config.json';
+import config from '../config.json';
 import googleVision from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
@@ -49,6 +49,8 @@ function snapCamera({ navigation }) {
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
+  const [searchResults, setSearchResults] = useState("");
+
 
   // On screen load, ask for permission to use the camera
   useEffect(() => {
@@ -131,7 +133,9 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          let res = await googleVision(data.base64);
+          setSearchResults(await googleVision(data.base64));
+          console.log("android")
+          
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -139,6 +143,8 @@ function snapCamera({ navigation }) {
 
       } else {
         // Compression for iOS is done here, it compresses the image twice        
+
+
         const options = { quality: 0.01, base64: true };
         let data = await camera.takePictureAsync(options);
         // Info printed to the console
@@ -165,7 +171,10 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          let res = await googleVision(data2.base64);
+          setSearchResults(await googleVision(data2.base64));
+          
+          console.log("iphone")
+
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -178,7 +187,11 @@ function snapCamera({ navigation }) {
   // Loads the ResultsScreen after a certain time
   const loadResultsScreen = async () => {
     setTimeout(
-      () => { navigation.push("Results") },
+      () => { 
+        console.log("resulting")
+        // console.log(searchResults)
+        navigation.push("Results", searchResults) 
+      },
       5000
     )
   };
