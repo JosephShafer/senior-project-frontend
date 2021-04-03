@@ -120,7 +120,7 @@ async function googleVision(base64) {
         } catch (error) {
                 console.log(error);
         }
-        loadingc = false;
+        loading = false;
         let results = await callWebCrawler(apiResult);
         return results;
 }
