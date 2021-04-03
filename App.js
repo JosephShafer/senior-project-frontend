@@ -34,10 +34,10 @@ const Camera = () => (
 function MyTabs() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
       <Tab.Screen name="Login" component={LoginScreen} />
       {/* Results only part of router for testing */}
-      <Tab.Screen name="Results" component={ResultsScreen} />
+      {/* <Tab.Screen name="Results" component={ResultsScreen} /> */}
       <Tab.Screen name="Camera" component={Camera} />
     </Tab.Navigator>
   );
