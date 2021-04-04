@@ -13,6 +13,7 @@ import config from './config.json';
 
 let loading = false;
 let apiResult = undefined;
+let prompt = '';
 
 async function callWebCrawler(target) {
 	try {
@@ -32,6 +33,11 @@ async function callWebCrawler(target) {
 	} catch(err) {
 		console.log(err);
 	}
+}
+
+export async function getPrompt() {
+        console.log("GETPROMPT: " + prompt);
+        return prompt;
 }
 
 async function googleVision(base64) {
@@ -73,6 +79,10 @@ async function googleVision(base64) {
                 console.log("Received response");
                 let responseJson = await response.json();
                 apiResult = responseJson.responses[0].labelAnnotations[0].description;
+                
+                prompt = apiResult;
+                console.log("HERE: " + prompt);
+                
         } catch (error) {
                 console.log(error);
         }

@@ -16,10 +16,12 @@ import ResultsScreen from './ResultsScreen';
 
 import config from './config.json';
 import googleVision from './ApiSend.js';
+import { getPrompt } from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
 let buttonOff = false;
+let prompt = 'prompt';
 
 // // function that returns ResultsScreen in a view
 // function Results() {
@@ -166,6 +168,8 @@ function snapCamera({ navigation }) {
         // Image passed to web crawler
         try{
           let res = await googleVision(data2.base64);
+          prompt = (await getPrompt()).toString();
+          console.log("SNAPPROMPT: " + prompt);
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -329,6 +333,12 @@ function snapCamera({ navigation }) {
             uri: backUri,
           }}
         >
+
+            <TouchableOpacity // Empty space so icon buttons work properly
+              style={{alignSelf:"center", flexDirection:"row", flex: 0.4, backgroundColor:"red"}}>
+                <Text> {prompt} </Text>
+            </TouchableOpacity> 
+
           <View // View for image retake option 
           style={{flex: 1, flexDirection: "row"}}>
            
