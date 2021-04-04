@@ -80,10 +80,10 @@ function Login({ navigation }) {
 
 
             <TouchableOpacity
-              onPress={submitInfo}
+              onPress={()=>navigation.push("Account")}
             >
               <View style={styles.button}>
-                <Text style={styles.buttonText}> Sign In With Google </Text>
+                <Text style={styles.buttonText}> Sign In With Service </Text>
               </View>
             </TouchableOpacity>
             </View>

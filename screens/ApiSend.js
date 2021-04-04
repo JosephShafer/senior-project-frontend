@@ -13,7 +13,7 @@ import config from '../config.json';
 
 let loading = false;
 let apiResult = undefined;
-// For testing style, set to true to use dummy data 
+// For testing style on result screen, set to true to use dummy data 
 const NO_BACKEND = false;
 let dummyData = {
         searchTerm: 'wood',
