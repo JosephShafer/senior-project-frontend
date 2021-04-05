@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // styling and background image
 import { View, Text, StyleSheet, Dimensions, Platform, 
   TouchableOpacity, ImageBackground, Modal, Pressable,
-  TextInput, Button} from 'react-native';
+  TextInput} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -142,7 +142,7 @@ function snapCamera({ navigation }) {
           setIdentifiedObject(object);
           prompt = object;
           let res = await callWebCrawler(object);
-          console.log("SNAPPROMPT: " + prompt);
+          //console.log("SNAPPROMPT: " + prompt);
           console.log("SNAPPROMPT: " + res);
         } catch(err) {
           console.log(err);
@@ -155,7 +155,7 @@ function snapCamera({ navigation }) {
         // Info printed to the console
         console.log("Took picture");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
-        console.log(fileInfo.size + " bytes");
+        //console.log(fileInfo.size + " bytes");
         // Sets picture taken flag to true to show preview
         setPicTaken(true);
         // Second time image is compressed since iOS images are larger
@@ -181,7 +181,7 @@ function snapCamera({ navigation }) {
           setIdentifiedObject(object);
           prompt = object;
           let res = await callWebCrawler(object);
-          console.log("SNAPPROMPT: " + prompt);
+          //console.log("SNAPPROMPT: " + prompt);
           console.log("SNAPPROMPT: " + res);
 
           //console.log("API's strongest guess: " + res);
@@ -452,7 +452,7 @@ function snapCamera({ navigation }) {
             >
               <View style={
             {
-              flex: 0.35,
+              flex: 0.3,
               justifyContent: "center",
               alignItems: "center",
               marginTop: 22,
@@ -475,11 +475,24 @@ function snapCamera({ navigation }) {
                   elevation: 5
                 }
               }>
-                  <TextInput placeholder={identifiedObject} 
-                                   onChangeText={(value) => setIdentifiedObject(value)} />
+                  <TextInput style={{borderBottomColor: '#000', borderBottomWidth: 2, margin:10, paddingLeft: 40, paddingRight:40}} 
+                    placeholder="Enter the correct item" 
+                    onChangeText={(value) => setIdentifiedObject(value)} />
   
-                        {/** This button is responsible to close the modal */}
-                        <Button title="Close" onPress= {() => nowCorrect()} />
+                      {/** This button is responsible to close the modal */}
+                      <Pressable
+                        style={
+                          {
+                            backgroundColor:"#C5DF81",
+                            borderRadius: 15,
+                            padding: 10,
+                            elevation: 2, 
+                            marginRight: 15,
+                          }
+                        }
+                        onPress={() => nowCorrect()}>
+                    <Text>OK</Text>
+                  </Pressable>
                 </View>
               </View>
             </Modal> 

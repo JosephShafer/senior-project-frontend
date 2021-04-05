@@ -124,7 +124,7 @@ async function googleVision(base64) {
                 apiResult = responseJson.responses[0].labelAnnotations[0].description;
                 
                 prompt = apiResult;
-                console.log("HERE: " + prompt);
+                //console.log("HERE: " + prompt);
                 
         } catch (error) {
                 console.log(error);
