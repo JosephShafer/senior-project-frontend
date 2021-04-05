@@ -20,24 +20,24 @@ function Login({ navigation }) {
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: config.GOOGLE_CLIENT.ID,
     scopes: ['openid', 'https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
-});
+  });
 
-React.useEffect(() => {
-  if (response?.type === 'success') {
+  React.useEffect(() => {
+    if (response?.type === 'success') {
       response['AuthOwner'] = 'Google';
       console.log(response);
-      navigation.navigate('Login Screen', {token: response})
-  }
-}, [response]);
+      navigation.navigate('Login Screen', { token: response })
+    }
+  }, [response]);
 
   let [fontsLoaded] = useFonts({
-    'Redressed-Regular' : require('../assets/fonts/Redressed-Regular.ttf'),
+    'Redressed-Regular': require('../assets/fonts/Redressed-Regular.ttf'),
   });
 
   if (!fontsLoaded) {
     return null;
   }
-  
+
 
   // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
@@ -52,8 +52,8 @@ React.useEffect(() => {
       console.error(error);
     }
   }
- 
-  
+
+
   return (
     <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.jpeg')}>
       <KeyboardAvoidingView
@@ -89,7 +89,7 @@ React.useEffect(() => {
 
 
             <TouchableOpacity
-              onPress={()=> navigation.push("AccountCreation")}
+              onPress={() => navigation.push("AccountCreation")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign Up </Text>
@@ -98,13 +98,13 @@ React.useEffect(() => {
 
 
             <TouchableOpacity
-              onPress={()=>promptAsync()}
+              onPress={() => promptAsync()}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign In With Service </Text>
               </View>
             </TouchableOpacity>
-            </View>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
     </ImageBackground>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     color: 'white',
     textShadowColor: 'rgba(50, 50, 50, 0.95)',
-    textShadowOffset: {width: -1, height: 1},
+    textShadowOffset: { width: -1, height: 1 },
     textShadowRadius: 20
   },
   placeholderImage: {
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     height: undefined,
     width: undefined,
     resizeMode: 'contain',
-    
+
   },
 
   textBoxContainer: {
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 20,
   },
-  buttonContainer : {
+  buttonContainer: {
     flex: 1
   },
   button: {
