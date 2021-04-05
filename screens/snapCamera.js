@@ -14,8 +14,8 @@ import * as FileSystem from 'expo-file-system';
 // import { createStackNavigator } from '@react-navigation/stack';
 import ResultsScreen from './ResultsScreen';
 
-import config from './config.json';
-import googleVision from './ApiSend.js';
+import config from '../config.json';
+import googleVision, { callWebCrawler } from './ApiSend.js';
 import { getPrompt } from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
@@ -51,6 +51,8 @@ function snapCamera({ navigation }) {
   const { height, width } = Dimensions.get('window');
   const screenRatio = height / width;
   const [isRatioSet, setIsRatioSet] = useState(false);
+
+  const [identifiedObject, setIdentifiedObject] = useState('Identifying...');
 
   // On screen load, ask for permission to use the camera
   useEffect(() => {
@@ -133,8 +135,13 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          let res = await googleVision(data.base64);
-          //console.log("API's strongest guess: " + res);
+          let object = await googleVision(data2.base64);
+          console.log(object)
+          setIdentifiedObject(object);
+          prompt = object;
+          let res = await callWebCrawler(object);
+          console.log("SNAPPROMPT: " + prompt);
+          console.log("SNAPPROMPT: " + res);
         } catch(err) {
           console.log(err);
         }
@@ -167,9 +174,14 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          let res = await googleVision(data2.base64);
-          prompt = (await getPrompt()).toString();
+          let object = await googleVision(data2.base64);
+          console.log(object)
+          setIdentifiedObject(object);
+          prompt = object;
+          let res = await callWebCrawler(object);
           console.log("SNAPPROMPT: " + prompt);
+          console.log("SNAPPROMPT: " + res);
+
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -336,7 +348,8 @@ function snapCamera({ navigation }) {
 
             <TouchableOpacity // Empty space so icon buttons work properly
               style={{alignSelf:"center", flexDirection:"row", flex: 0.4, backgroundColor:"red"}}>
-                <Text> {prompt} </Text>
+                {/* <Text> {prompt}</Text> */}
+                <Text>Identified: {identifiedObject} </Text>
             </TouchableOpacity> 
 
           <View // View for image retake option 
