@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
 import { View, Text, StyleSheet, Dimensions, Platform, 
-  TouchableOpacity, ImageBackground} from 'react-native';
+  TouchableOpacity, ImageBackground, Modal, Pressable,
+  TextInput} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -15,11 +16,12 @@ import * as FileSystem from 'expo-file-system';
 import ResultsScreen from './ResultsScreen';
 
 import config from '../config.json';
-import googleVision from './ApiSend.js';
+import googleVision, { callWebCrawler } from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
 let buttonOff = false;
+let prompt = 'prompt';
 
 // // function that returns ResultsScreen in a view
 // function Results() {
@@ -51,6 +53,10 @@ function snapCamera({ navigation }) {
   const [isRatioSet, setIsRatioSet] = useState(false);
   const [searchResults, setSearchResults] = useState("");
 
+
+  const [identifiedObject, setIdentifiedObject] = useState('Identifying...');
+  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   // On screen load, ask for permission to use the camera
   useEffect(() => {
@@ -123,8 +129,8 @@ function snapCamera({ navigation }) {
         let data = await camera.takePictureAsync(options);
         // Info printed to console
         console.log("Took picture");
-        console.log(fileInfo.size + " bytes");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
         //console.log(data.base64);
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
@@ -133,10 +139,14 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          setSearchResults(await googleVision(data.base64));
-          console.log("android")
-          
-          //console.log("API's strongest guess: " + res);
+          let object = await googleVision(data.base64);
+          console.log(object)
+          setIdentifiedObject(object);
+          prompt = object;
+          let res = await callWebCrawler(object);
+          setSearchResults(res);
+          //console.log("SNAPPROMPT: " + prompt);
+          console.log("SNAPPROMPT: " + res);
         } catch(err) {
           console.log(err);
         }
@@ -150,7 +160,7 @@ function snapCamera({ navigation }) {
         // Info printed to the console
         console.log("Took picture");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
-        console.log(fileInfo.size + " bytes");
+        //console.log(fileInfo.size + " bytes");
         // Sets picture taken flag to true to show preview
         setPicTaken(true);
         // Second time image is compressed since iOS images are larger
@@ -171,10 +181,14 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          setSearchResults(await googleVision(data2.base64));
-          
-          console.log("iphone")
-
+          let object = await googleVision(data2.base64);
+          console.log(object)
+          setIdentifiedObject(object);
+          prompt = object;
+          let res = await callWebCrawler(object);
+          //console.log("SNAPPROMPT: " + prompt);
+          console.log("SNAPPROMPT: " + res);
+          setSearchResults(res);
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -208,6 +222,7 @@ function snapCamera({ navigation }) {
     
     loadingAd();
     loadResultsScreen();
+    console.log("TEXTINPUT: "+identifiedObject);
     
     // Timers set to revert changes made to touchable opacities
     setTimeout(
@@ -223,6 +238,30 @@ function snapCamera({ navigation }) {
       1000
     )
     
+  }
+
+  const identifiedCorrect = async () => {
+    setModalVisible(!modalVisible);
+    let res = await callWebCrawler(identifiedObject);
+    console.log("SNAPPROMPT: " + identifiedObject);
+    console.log("SNAPPROMPT: " + res);
+  };
+
+  const identifiedIncorrect = async () => {
+    setModalVisible(!modalVisible);
+    setModalVisible2(true);
+  };
+
+  const nowCorrect = async () => {
+    setModalVisible2(false);
+    let res = await callWebCrawler(identifiedObject);
+    console.log("SNAPPROMPT: " + identifiedObject);
+    console.log("SNAPPROMPT: " + res);
+  };
+
+  function retakePic() {
+    setPicTaken(false);
+    setModalVisible(true);
   }
 
   // Main Functionality of function/screen is below
@@ -342,6 +381,131 @@ function snapCamera({ navigation }) {
             uri: backUri,
           }}
         >
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={
+            {
+              flex: 0.35,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 22,
+            }
+          }>
+                <View style= {
+                {
+                  margin: 20,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  padding: 15,
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5
+                }
+              }>
+                  <Text>Item Detected: {identifiedObject}</Text>
+                  <Text>Is this correct?</Text>
+                  <View style={{flexDirection:'row'}}>
+                  <Pressable
+                    style={
+                      {
+                        backgroundColor:"#C5DF81",
+                        borderRadius: 15,
+                        padding: 10,
+                        elevation: 2, 
+                        marginRight: 15,
+                      }
+                    }
+                    onPress={() => identifiedCorrect()}
+                  >
+                    <Text>Yes</Text>
+                  </Pressable>
+                  <Pressable
+                    style={
+                      {
+                        backgroundColor:"#F0623B",
+                        borderRadius: 15,
+                        padding: 10,
+                        elevation: 2
+                      }
+                    }
+                    onPress={() => identifiedIncorrect()}
+                  >
+                    <Text>No</Text>
+                  </Pressable>
+                  </View>
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible2}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible2(!modalVisible2);
+              }}
+            >
+              <View style={
+            {
+              flex: 0.3,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 22,
+            }
+          }>
+                <View style= {
+                {
+                  margin: 20,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  padding: 15,
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5
+                }
+              }>
+                  <TextInput style={{borderBottomColor: '#000', borderBottomWidth: 2, margin:10, paddingLeft: 40, paddingRight:40}} 
+                    placeholder="Enter the correct item" 
+                    onChangeText={(value) => setIdentifiedObject(value)} />
+  
+                      {/** This button is responsible to close the modal */}
+                      <Pressable
+                        style={
+                          {
+                            backgroundColor:"#C5DF81",
+                            borderRadius: 15,
+                            padding: 10,
+                            elevation: 2, 
+                            marginRight: 15,
+                          }
+                        }
+                        onPress={() => nowCorrect()}>
+                    <Text>OK</Text>
+                  </Pressable>
+                </View>
+              </View>
+            </Modal> 
+
           <View // View for image retake option 
           style={{flex: 1, flexDirection: "row"}}>
            
@@ -352,7 +516,7 @@ function snapCamera({ navigation }) {
             <TouchableOpacity // Icon & text both work to retake image
               style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
               disabled = {buttonOff}
-              onPress={() => setPicTaken(false)
+              onPress={() => retakePic()
               }>
                 <Ionicons // Icon for camera flipping button
                         style={{opacity: buttonOpacity,}}

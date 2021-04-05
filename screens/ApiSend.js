@@ -8,13 +8,13 @@ import {
 
 import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
-import { FontAwesome, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { FontAwesome, Ionicons,MaterialCommunityIcons } from '@expo/vector-icons';
 import config from '../config.json';
 
 let loading = false;
 let apiResult = undefined;
 // For testing style on result screen, set to true to use dummy data 
-const NO_BACKEND = false;
+const NO_BACKEND = true;
 let dummyData = {
         searchTerm: 'wood',
         products: [
@@ -54,7 +54,7 @@ let dummyData = {
         crawled: false
 };
 
-async function callWebCrawler(target) {
+export async function callWebCrawler(target) {
         if(NO_BACKEND == true){
                 return dummyData;
         }
@@ -117,12 +117,19 @@ async function googleVision(base64) {
                 console.log("Received response");
                 let responseJson = await response.json();
                 apiResult = responseJson.responses[0].labelAnnotations[0].description;
+                
+                prompt = apiResult;
+                //console.log("HERE: " + prompt);
+                
         } catch (error) {
                 console.log(error);
         }
         loading = false;
-        let results = await callWebCrawler(apiResult);
-        return results;
+        // let results = await callWebCrawler(apiResult);
+        // return results;
+	// loadingc = false;
+        return apiResult;
+	// await callWebCrawler(apiResult);
 }
 
 export default googleVision;
