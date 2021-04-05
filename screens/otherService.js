@@ -6,6 +6,10 @@
 // Right now this only does google as a separate service
 // we can add more though
 
+// I ended up taking the logic from this file and putting the google login
+// into login.js, but if we end up adding more login providers we can use this
+// as a reference.
+
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';

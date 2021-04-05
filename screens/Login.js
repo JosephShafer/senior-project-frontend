@@ -4,6 +4,11 @@ import { Asset, useAssets } from 'expo-asset';
 // import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import AccountCreation from './AccountCreation';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+WebBrowser.maybeCompleteAuthSession();
+
+
 
 import config from '../config.json';
 
@@ -11,6 +16,19 @@ function Login({ navigation }) {
   const [value, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
+
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: config.GOOGLE_CLIENT.ID,
+    scopes: ['openid', 'https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email']
+});
+
+React.useEffect(() => {
+  if (response?.type === 'success') {
+      response['AuthOwner'] = 'Google';
+      console.log(response);
+      navigation.navigate('Login Screen', {token: response})
+  }
+}, [response]);
 
   let [fontsLoaded] = useFonts({
     'Redressed-Regular' : require('../assets/fonts/Redressed-Regular.ttf'),
@@ -80,7 +98,7 @@ function Login({ navigation }) {
 
 
             <TouchableOpacity
-              onPress={()=>navigation.push("Account")}
+              onPress={()=>promptAsync()}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign In With Service </Text>
