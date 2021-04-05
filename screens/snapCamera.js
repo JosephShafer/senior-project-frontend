@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
 import { View, Text, StyleSheet, Dimensions, Platform, 
-  TouchableOpacity, ImageBackground, Modal, Pressable} from 'react-native';
+  TouchableOpacity, ImageBackground, Modal, Pressable,
+  TextInput, Button} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -53,6 +54,7 @@ function snapCamera({ navigation }) {
 
   const [identifiedObject, setIdentifiedObject] = useState('Identifying...');
   const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible2, setModalVisible2] = useState(false);
 
   // On screen load, ask for permission to use the camera
   useEffect(() => {
@@ -211,6 +213,7 @@ function snapCamera({ navigation }) {
     
     loadingAd();
     loadResultsScreen();
+    console.log("TEXTINPUT: "+identifiedObject);
     
     // Timers set to revert changes made to touchable opacities
     setTimeout(
@@ -230,11 +233,21 @@ function snapCamera({ navigation }) {
 
   const identifiedCorrect = async () => {
     setModalVisible(!modalVisible);
-    callWebCrawler(identifiedObject);
+    let res = await callWebCrawler(identifiedObject);
+    console.log("SNAPPROMPT: " + identifiedObject);
+    console.log("SNAPPROMPT: " + res);
   };
 
   const identifiedIncorrect = async () => {
     setModalVisible(!modalVisible);
+    setModalVisible2(true);
+  };
+
+  const nowCorrect = async () => {
+    setModalVisible2(false);
+    let res = await callWebCrawler(identifiedObject);
+    console.log("SNAPPROMPT: " + identifiedObject);
+    console.log("SNAPPROMPT: " + res);
   };
 
   function retakePic() {
@@ -424,6 +437,49 @@ function snapCamera({ navigation }) {
                     <Text>No</Text>
                   </Pressable>
                   </View>
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible2}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible2(!modalVisible2);
+              }}
+            >
+              <View style={
+            {
+              flex: 0.35,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 22,
+            }
+          }>
+                <View style= {
+                {
+                  margin: 20,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  padding: 15,
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5
+                }
+              }>
+                  <TextInput placeholder={identifiedObject} 
+                                   onChangeText={(value) => setIdentifiedObject(value)} />
+  
+                        {/** This button is responsible to close the modal */}
+                        <Button title="Close" onPress= {() => nowCorrect()} />
                 </View>
               </View>
             </Modal> 
