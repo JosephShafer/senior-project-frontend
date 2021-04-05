@@ -127,8 +127,8 @@ function snapCamera({ navigation }) {
         let data = await camera.takePictureAsync(options);
         // Info printed to console
         console.log("Took picture");
-        console.log(fileInfo.size + " bytes");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
+        console.log(fileInfo.size + " bytes");
         //console.log(data.base64);
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
@@ -137,7 +137,7 @@ function snapCamera({ navigation }) {
 
         // Image passed to web crawler
         try{
-          let object = await googleVision(data2.base64);
+          let object = await googleVision(data.base64);
           console.log(object)
           setIdentifiedObject(object);
           prompt = object;
