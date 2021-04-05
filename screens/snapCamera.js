@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
 import { View, Text, StyleSheet, Dimensions, Platform, 
-  TouchableOpacity, ImageBackground} from 'react-native';
+  TouchableOpacity, ImageBackground, Modal, Pressable} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -16,7 +16,6 @@ import ResultsScreen from './ResultsScreen';
 
 import config from '../config.json';
 import googleVision, { callWebCrawler } from './ApiSend.js';
-import { getPrompt } from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
@@ -53,6 +52,7 @@ function snapCamera({ navigation }) {
   const [isRatioSet, setIsRatioSet] = useState(false);
 
   const [identifiedObject, setIdentifiedObject] = useState('Identifying...');
+  const [modalVisible, setModalVisible] = useState(true);
 
   // On screen load, ask for permission to use the camera
   useEffect(() => {
@@ -228,6 +228,20 @@ function snapCamera({ navigation }) {
     
   }
 
+  const identifiedCorrect = async () => {
+    setModalVisible(!modalVisible);
+    callWebCrawler(identifiedObject);
+  };
+
+  const identifiedIncorrect = async () => {
+    setModalVisible(!modalVisible);
+  };
+
+  function retakePic() {
+    setPicTaken(false);
+    setModalVisible(true);
+  }
+
   // Main Functionality of function/screen is below
   // Checks for camera permissions to return views
   if (hasPermission === null) {
@@ -345,12 +359,74 @@ function snapCamera({ navigation }) {
             uri: backUri,
           }}
         >
-
-            <TouchableOpacity // Empty space so icon buttons work properly
-              style={{alignSelf:"center", flexDirection:"row", flex: 0.4, backgroundColor:"red"}}>
-                {/* <Text> {prompt}</Text> */}
-                <Text>Identified: {identifiedObject} </Text>
-            </TouchableOpacity> 
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={
+            {
+              flex: 0.35,
+              justifyContent: "center",
+              alignItems: "center",
+              marginTop: 22,
+            }
+          }>
+                <View style= {
+                {
+                  margin: 20,
+                  backgroundColor: "white",
+                  borderRadius: 20,
+                  padding: 15,
+                  alignItems: "center",
+                  shadowColor: "#000",
+                  shadowOffset: {
+                    width: 0,
+                    height: 2
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 5
+                }
+              }>
+                  <Text>Item Detected: {identifiedObject}</Text>
+                  <Text>Is this correct?</Text>
+                  <View style={{flexDirection:'row'}}>
+                  <Pressable
+                    style={
+                      {
+                        backgroundColor:"#C5DF81",
+                        borderRadius: 15,
+                        padding: 10,
+                        elevation: 2, 
+                        marginRight: 15,
+                      }
+                    }
+                    onPress={() => identifiedCorrect()}
+                  >
+                    <Text>Yes</Text>
+                  </Pressable>
+                  <Pressable
+                    style={
+                      {
+                        backgroundColor:"#F0623B",
+                        borderRadius: 15,
+                        padding: 10,
+                        elevation: 2
+                      }
+                    }
+                    onPress={() => identifiedIncorrect()}
+                  >
+                    <Text>No</Text>
+                  </Pressable>
+                  </View>
+                </View>
+              </View>
+            </Modal> 
 
           <View // View for image retake option 
           style={{flex: 1, flexDirection: "row"}}>
@@ -362,7 +438,7 @@ function snapCamera({ navigation }) {
             <TouchableOpacity // Icon & text both work to retake image
               style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
               disabled = {buttonOff}
-              onPress={() => setPicTaken(false)
+              onPress={() => retakePic()
               }>
                 <Ionicons // Icon for camera flipping button
                         style={{opacity: buttonOpacity,}}

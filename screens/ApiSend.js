@@ -83,11 +83,6 @@ export async function callWebCrawler(target) {
 	}
 }
 
-export async function getPrompt() {
-        console.log("GETPROMPT: " + prompt);
-        return prompt;
-}
-
 async function googleVision(base64) {
         loading = true;
 	try {
