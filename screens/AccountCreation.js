@@ -13,9 +13,43 @@ function AccountCreation() {
     const [password, onChangePasswordText] = useState('');
 
     const signup = async () => {
-        // TODO add a response if account creation
-        // failed or was success
-        return true;
+
+        if( !username || !email || !firstName || !lastName|| !password ){
+            alert('All fields are requried');
+            return;
+        }
+        
+        const url = config.aws.url + 'signup';
+        try {
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    firstName: firstName,
+                    lastName: lastName,
+                    password: password
+                })
+            });
+            let data = await response.json();
+            if(data.success){
+                alert('Account creation successful');
+            }
+            /**
+             * (JP) TODO: the alert in else statement is not working when someone tries 
+             *       to sign up with an already used username or email
+            */
+            else{
+                alert('Failed! If you already have an account, please log in.');
+            }
+        } catch (error) {
+            alert('Unable to create an account');
+            console.log(error);
+        }
     }
 
     return (

@@ -15,6 +15,7 @@ import AccountCreation from './screens/AccountCreation';
 import Account from './screens/otherService';
 
 import  LoginContext  from './screens/context';
+import ForgotPassword from './screens/forgotPassword';
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -44,6 +45,7 @@ const LoginScreen = ({ navigation, route }) => {
           <loginStack.Screen name="Login" component={Login} />
           <loginStack.Screen name="AccountCreation" component={AccountCreation} />
           <loginStack.Screen name="Account" component={Account} />
+          <loginStack.Screen name="ForgotPassword" component={ForgotPassword} />  
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
