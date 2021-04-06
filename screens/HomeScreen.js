@@ -31,7 +31,7 @@ function HomeScreen({ navigation, route }) {
           // console.log(nameReturn);
           setUserName(nameReturn[0]);
         })
-    })
+    }, [])
   }
 
   // console.log(userToken);

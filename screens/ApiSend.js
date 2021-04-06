@@ -14,7 +14,7 @@ import config from '../config.json';
 let loading = false;
 let apiResult = undefined;
 // For testing style on result screen, set to true to use dummy data 
-const NO_BACKEND = true;
+const NO_BACKEND = false;
 let dummyData = {
         searchTerm: 'wood',
         products: [
@@ -70,7 +70,7 @@ export async function callWebCrawler(target) {
                                 searchTerm: target,
                         }),
                 });
-                var responseJson = await response.json();
+                let responseJson = await response.json();
                 console.log("Connection successfully made.");
                 return responseJson;
         } catch (err) {
@@ -117,8 +117,10 @@ async function googleVision(base64) {
                 console.log("Received response");
                 let responseJson = await response.json();
                 apiResult = responseJson.responses[0].labelAnnotations[0].description;
+                console.log("api result")
+                console.log(apiResult)
                 
-                prompt = apiResult;
+                // prompt = apiResult;
                 //console.log("HERE: " + prompt);
                 
         } catch (error) {

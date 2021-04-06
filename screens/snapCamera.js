@@ -202,7 +202,6 @@ function snapCamera({ navigation }) {
   const loadResultsScreen = async () => {
     setTimeout(
       () => { 
-        console.log("resulting")
         // console.log(searchResults)
         navigation.push("Results", searchResults) 
       },
@@ -255,6 +254,7 @@ function snapCamera({ navigation }) {
   const nowCorrect = async () => {
     setModalVisible2(false);
     let res = await callWebCrawler(identifiedObject);
+    setSearchResults(res);
     console.log("SNAPPROMPT: " + identifiedObject);
     console.log("SNAPPROMPT: " + res);
   };
@@ -486,7 +486,7 @@ function snapCamera({ navigation }) {
               }>
                   <TextInput style={{borderBottomColor: '#000', borderBottomWidth: 2, margin:10, paddingLeft: 40, paddingRight:40}} 
                     placeholder="Enter the correct item" 
-                    onChangeText={(value) => setIdentifiedObject(value)} />
+                    onChangeText={(value) => {setIdentifiedObject(value)}} />
   
                       {/** This button is responsible to close the modal */}
                       <Pressable
