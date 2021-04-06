@@ -1164,6 +1164,13 @@
   dependencies:
     dequal "^1.0.0"
 
+"@react-native-async-storage/async-storage@^1.15.1":
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.1.tgz#9b26c32af6640d2d1f84862657825f75672bfa6b"
+  integrity sha512-rRQ3Zsz1DIzxVlRVsE4nRNLWyv4hXmt/Ecwan+ypKwp16+SUTsfdX7F/W0xu4FpUwQDFCjl7MAS9pKV2VEPwDg==
+  dependencies:
+    deep-assign "^3.0.0"
+
 "@react-native-community/cli-debugger-ui@^4.9.0":
   version "4.9.0"
   resolved "https://registry.yarnpkg.com/@react-native-community/cli-debugger-ui/-/cli-debugger-ui-4.9.0.tgz#4177764ba69243c97aa26829d59d9501acb2bd71"
@@ -2517,10 +2524,10 @@ expo-asset@~8.2.0:
     path-browserify "^1.0.0"
     url-parse "^1.4.4"
 
-expo-camera@~9.1.0:
-  version "9.1.1"
-  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-9.1.1.tgz#8630012524b112bf7667ae7a85bbbca5a0911a24"
-  integrity sha512-PWxUS/lTETt8fz03dLGwTLQ3l16irKNjOMfBKJ9KNBlKaPdQv12S6gBK/VE4pHi4vHSf7kL1f8FTI8JUu8Kq7Q==
+expo-camera@9.1.0:
+  version "9.1.0"
+  resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-9.1.0.tgz#75694f00bd584654f15468a4156bd42bc4fe4c2c"
+  integrity sha512-+P6IjYZi6Kp50weQbgBbehP1wjcdLqj3oaU2NZOhVsja+9mgdjKxyNvhLyV7s7BAUIHpNQQbLE7VzywRW2bcnA==
   dependencies:
     "@koale/useworker" "^3.2.1"
     invariant "2.2.4"

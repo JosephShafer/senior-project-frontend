@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
+import { AsyncStorage } from '@react-native-async-storage/async-storage';
 // import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import AccountCreation from './AccountCreation';
 
-import config from '../config.json';
+// import config from '../config.json';
 
 function Login({ navigation }) {
-  const [value, onChangeUserText] = useState('');
+  const [username, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
 
@@ -23,7 +24,7 @@ function Login({ navigation }) {
 
   // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
-    const url = config.AWS.url;
+/*     const url = config.AWS.url;
     try {
       let response = await fetch(url);
       let fetchData = await response.text();
@@ -32,10 +33,49 @@ function Login({ navigation }) {
     } catch (error) {
       console.log("Server is probably not running if you're seeing error");
       console.error(error);
+    } */
+
+    if( !username || !password ){
+      alert('Username and password are required')
+      return;
+    }
+
+    const url = 'http://192.168.1.77:8001/signin';
+    try {
+      let response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+      let data = await response.json();
+
+      if(data.success){
+        // https://blog.jscrambler.com/how-to-use-react-native-asyncstorage/
+        /** (JP) TODO: LOGIN ISSUE IN THE BACKEND 
+         *  Check AsyncStorage
+        */
+        await AsyncStorage.setItem('userToken', user._id)
+        .then( () => {
+          navigation.navigate('HomeScreen');
+        })
+        .catch(() => {
+          alert('There was a sign in error:!');
+        })
+      } else{
+        alert('An error has occurred. Please check the email and password!');
+      }
+    } catch (error) {
+      alert('Unable to sign you in.');
+      console.log(error);
     }
   }
  
-  
   return (
     <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.jpeg')}>
       <KeyboardAvoidingView
@@ -50,7 +90,7 @@ function Login({ navigation }) {
             autoCompleteType={"username"}
             style={styles.textBox}
             onChangeText={text => onChangeUserText(text)}
-            value={value}
+            value={username}
             placeholder={'Username'}
           />
           <TextInput
@@ -69,6 +109,14 @@ function Login({ navigation }) {
               </View>
             </TouchableOpacity>
 
+            {/* JP: Forgot Password button added */}
+            <TouchableOpacity
+              onPress={()=> navigation.push("ForgotPassword")}
+            >
+              <View style={styles.button}>
+                <Text style={styles.buttonText}> Forgot Password? </Text>
+              </View>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={()=> navigation.push("AccountCreation")}

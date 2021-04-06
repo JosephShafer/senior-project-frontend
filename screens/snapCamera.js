@@ -14,7 +14,7 @@ import * as FileSystem from 'expo-file-system';
 // import { createStackNavigator } from '@react-navigation/stack';
 import ResultsScreen from './ResultsScreen';
 
-import config from './config.json';
+// import config from './config.json';
 import googleVision from './ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown

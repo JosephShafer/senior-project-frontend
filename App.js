@@ -11,6 +11,7 @@ import Login from './screens/Login';
 import snapCamera from './screens/snapCamera';
 import ResultsScreen from './screens/ResultsScreen';
 import AccountCreation from './screens/AccountCreation';
+import ForgotPassword from './screens/forgotPassword';
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -21,6 +22,7 @@ const LoginScreen = () => (
   <loginStack.Navigator>
     <loginStack.Screen name="Login" component={Login} />
     <loginStack.Screen name="AccountCreation" component={AccountCreation} />
+    <loginStack.Screen name="ForgotPassword" component={ForgotPassword} />
   </loginStack.Navigator>
 );
 
