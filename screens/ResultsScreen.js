@@ -15,14 +15,41 @@ function ResultsScreen({ route, navigation }) {
   ]);
   const [listToUpdate, updateList] = useState(false);
 
+  let filter = (arrayToFilter) => {
+    // issues still : glitter, glue, 
+    // anything with % in it
+    for(let i in arrayToFilter){
+        arrayToFilter[i] = arrayToFilter[i].replace(/-/g, ' ')
+        arrayToFilter[i] = arrayToFilter[i].split('/')
+        let changed = false;
+        for(let j in arrayToFilter[i]){
+            console.log(arrayToFilter[i][j])
+            if(arrayToFilter[i][j].includes(' ')){
+                console.log(arrayToFilter[i][j])
+                arrayToFilter[i][j] = arrayToFilter[i][j].split('?')
+                arrayToFilter[i] = arrayToFilter[i][j][0]
+                changed = true;
+                break;
+            }
+        }
+        if(changed === false){
+            arrayToFilter[i] = arrayToFilter[i][2].replace('www.', '').replace('.com', '');
+            arrayToFilter[i] += " project"
+        }
+    }
+    console.log(arrayToFilter)
+    return arrayToFilter;
+}
 
   // updates once
   useEffect(() => {
     callWebCrawler(route.params.searchTerm)
       .then((res) => {
-        // console.log(res)
-        setResultText(res.products);
-        setProjectsText(res.projects);
+        let filteredProducts = filter(res.products);
+        let filteredProjects = filter(res.projects);
+
+        setResultText(filteredProducts);
+        setProjectsText(filteredProjects);
         setDATA([ 
           { title: "Products", data: productsResults },
           { title: "Projects", data: projectResults }
@@ -31,6 +58,7 @@ function ResultsScreen({ route, navigation }) {
       )
       .then(() => {
         updateList(true)
+        console.log(DATA)
         console.log(listToUpdate)
       })
       .catch(e => console.log(e))
