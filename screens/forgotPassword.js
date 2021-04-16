@@ -71,14 +71,14 @@ const styles = StyleSheet.create({
       color: '#000000',
       textAlign: 'center',
       fontWeight: 'bold',
-      width: 350,
+      width: '90%',
       height: 60
     },
     header2: {
       fontSize: 18, 
       color: '#000000',
       textAlign: 'center',
-      width: 350
+      width: '85%'
     },
     sendContainer: {
       flexDirection: 'row',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       fontSize: 20,
       padding: 10,
-      width: 300,
+      width: '70%',
       marginRight: 5,
       borderRadius: 20,
       backgroundColor: 'white'

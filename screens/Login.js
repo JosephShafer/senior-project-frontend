@@ -129,7 +129,7 @@ function Login({ navigation }) {
 
             {/* JP: Forgot Password button added */}
             <TouchableOpacity
-              onPress={()=> navigation.push("ForgotPassword")}
+              onPress={()=> navigation.push("Forgot Password")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Forgot Password? </Text>
@@ -137,7 +137,7 @@ function Login({ navigation }) {
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => navigation.push("AccountCreation")}
+              onPress={() => navigation.push("Sign Up")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Sign Up </Text>

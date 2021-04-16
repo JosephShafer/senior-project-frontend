@@ -43,9 +43,9 @@ const LoginScreen = ({ navigation, route }) => {
       <LoginContext.Provider>
         <loginStack.Navigator>
           <loginStack.Screen name="Login" component={Login} />
-          <loginStack.Screen name="AccountCreation" component={AccountCreation} />
+          <loginStack.Screen name="Sign Up" component={AccountCreation} />
           <loginStack.Screen name="Account" component={Account} />
-          <loginStack.Screen name="ForgotPassword" component={ForgotPassword} />  
+          <loginStack.Screen name="Forgot Password" component={ForgotPassword} />  
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
