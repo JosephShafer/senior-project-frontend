@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import validator from 'validator';
 
 import config from '../config.json';
 
 function ForgotPassword({navigation}) {
     const [email, onChangeEmailText] = useState('');
+    if (validator.isEmpty(ForgotPassword.[email, onChangeEmailText])) {
+    console.log('You did not enter an email address.');
+    }
+    if (!validator.isEmail(ForgotPassword.[email, onChangeEmailText])) {
+    console.log('You did not enter a valid email address.');
+    }
 
     const SendEmail = async() => {
         const url = config.aws.url + 'forgot_password';
