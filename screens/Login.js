@@ -7,6 +7,7 @@ import { useFonts } from 'expo-font';
 import AccountCreation from './AccountCreation';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import validator from 'validator';
 WebBrowser.maybeCompleteAuthSession();
 
 
@@ -16,6 +17,12 @@ import config from '../config.json';
 function Login({ navigation }) {
   const [username, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
+  if (validator.isEmpty(Login.[value, onChangeUserText]) || validator.isEmpty(Login.[password, onChangePasswordText])) {
+    console.log('User Name or Password field is empty');
+  }
+  if (!validator.isAlphanumeric([value, onChangeUserText]) || !validator.isAlphanumeric([password, onChangePasswordText])) {
+    console.log('Please use standard Enlgish characters and numbers only');
+  }
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
