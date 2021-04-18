@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
 import loginContext from './context';
 import config from '../config.json';
@@ -62,10 +62,17 @@ function HomeScreen({ navigation, route }) {
 
 
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Snap & Go placeholder front Screen</Text>
-      <Text>Welcome Back {userName}</Text>
-
+    <View style={{ flex: 0.25, alignItems: 'center', justifyContent: 'center' }}>
+      <Text>Snap & Go placeholder login Screen</Text>
+      <Text>Welcome back, {userName}!</Text>
+        <TouchableOpacity
+          style={{}}
+          onPress={()=> navigation.navigate('Search History') }
+        >
+          <View>
+            <Text style={{fontSize: 30, paddingTop: 30,}}> Search History </Text>
+          </View>
+        </TouchableOpacity>
     </View>
   );
 }

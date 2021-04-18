@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
+import PastSearches from './screens/SearchHistory';
 import snapCamera from './screens/snapCamera';
 import ResultsScreen from './screens/ResultsScreen';
 import AccountCreation from './screens/AccountCreation';
@@ -16,6 +17,7 @@ import Account from './screens/otherService';
 
 import  LoginContext  from './screens/context';
 import ForgotPassword from './screens/forgotPassword';
+import SearchHistory from './screens/SearchHistory';
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -35,6 +37,7 @@ const LoginScreen = ({ navigation, route }) => {
       <LoginContext.Provider value={userToken}>
         <loginStack.Navigator>
           <loginStack.Screen name="Home" component={HomeScreen} />
+          <loginStack.Screen name="Search History" component={SearchHistory} />
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
@@ -66,7 +69,7 @@ function MyTabs() {
   return (
     <Tab.Navigator>
       {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
-      <Tab.Screen name="Login Screen" component={LoginScreen} />
+      <Tab.Screen name="User" component={LoginScreen} />
       {/* Results only part of router for testing */}
       <Tab.Screen name="Camera" component={Camera} />
     </Tab.Navigator>

@@ -38,7 +38,7 @@ function Login({ navigation }) {
     if (response?.type === 'success') {
       response['AuthOwner'] = 'Google';
       console.log(response);
-      navigation.navigate('Login Screen', { token: response })
+      navigation.navigate('User', { token: response })
     }
   }, [response]);
 
