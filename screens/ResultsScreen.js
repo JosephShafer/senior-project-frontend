@@ -1,36 +1,66 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, SectionList, StatusBar } from 'react-native';
+import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import config from '../config.json';
 import { callWebCrawler } from './ApiSend.js';
 
 
-
-
 function ResultsScreen({ route, navigation }) {
-  const [productsResults, setResultText] = useState(route.params.products);
-  const [projectResults, setProjectsText] = useState(route.params.projects);
+  const [productsTitles, setProductsTitles] = useState(route.params.products);
+  const [projectTitles, setProjectsTitles] = useState(route.params.projects);
+
   const [DATA, setDATA] = useState([
-    { title: "Products", data: productsResults },
-    { title: "Projects", data: projectResults }
+    { title: "Products", data: productsTitles },
+    { title: "Projects", data: projectTitles }
   ]);
   const [listToUpdate, updateList] = useState(false);
+
+  let filter = (arrayToFilter) => {
+    for (let i in arrayToFilter) {
+      let linkString = arrayToFilter[i];
+      linkString = linkString.replace(/-/g, ' ')
+      linkString = linkString.split('/')
+      let changed = false;
+      for (let j in linkString) {
+        //console.log(linkString[j])
+        if (linkString[j].includes(' ')) {
+          //console.log(linkString[j])
+          linkString[j] = linkString[j].split('?')
+          linkString = linkString[j][0]
+          changed = true;
+          break;
+        }
+      }
+      if (changed === false) {
+        linkString = linkString[2].replace('www.', '').replace('.com', '');
+        linkString += " project"
+      }
+      arrayToFilter[i] = { "link": arrayToFilter[i], "extractedTitle": decodeURIComponent(linkString) }
+    }
+    console.log(arrayToFilter)
+    return arrayToFilter;
+  }
 
 
   // updates once
   useEffect(() => {
     callWebCrawler(route.params.searchTerm)
       .then((res) => {
-        // console.log(res)
-        setResultText(res.products);
-        setProjectsText(res.projects);
-        setDATA([ 
-          { title: "Products", data: productsResults },
-          { title: "Projects", data: projectResults }
+        let filteredProducts = filter(res.products);
+        let filteredProjects = filter(res.projects);
+
+        setProductsTitles(filteredProducts);
+        setProjectsTitles(filteredProjects);
+        setDATA([
+          { title: "Products", data: productsTitles },
+          { title: "Projects", data: projectTitles }
         ]
-        )}
+        )
+      }
       )
       .then(() => {
         updateList(true)
+        console.log(DATA)
         console.log(listToUpdate)
       })
       .catch(e => console.log(e))
@@ -67,9 +97,10 @@ function ResultsScreen({ route, navigation }) {
       <SectionList
         sections={DATA}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => <Text>
-          {`${item}`}
-        </Text>}
+        renderItem={({ item }) => <Button
+         title={`${item['extractedTitle']}`} 
+         onPress={() => WebBrowser.openBrowserAsync(`${item['link']}`)}
+         />}
         renderSectionHeader={({ section: { title } }) => (
           <Text style={styles.header}>{title}</Text>
         )}
