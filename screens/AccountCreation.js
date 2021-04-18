@@ -57,7 +57,7 @@ function AccountCreation() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.loginContainer}>
 
-            <Text>Username</Text>
+            <Text style={{paddingLeft: 10,}}>Username</Text>
             <TextInput
                 focus
                 autoCompleteType={"username"}
@@ -66,16 +66,16 @@ function AccountCreation() {
                 value={username}
                 placeholder={'Username'}
             />
-            <Text>Email</Text>
+            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Email</Text>
             <TextInput
                 focus
                 autoCompleteType={"email"}
                 style={styles.textBox}
                 onChangeText={text => onChangeEmailText(text)}
                 value={email}
-                placeholder={'email'}
+                placeholder={'Email'}
             />
-            <Text>First Name</Text>
+            <Text style={{paddingLeft: 10, paddingTop: 25,}}>First Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -85,7 +85,7 @@ function AccountCreation() {
                 placeholder={'First Name'}
             />
             {/* TODO make this left-right */}
-            <Text>Last Name</Text>
+            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Last Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -94,7 +94,7 @@ function AccountCreation() {
                 value={lastName}
                 placeholder={'Last Name'}
             />
-            <Text>Password</Text>
+            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Password</Text>
             <TextInput
                 secureTextEntry
                 style={styles.textBox}
@@ -131,19 +131,23 @@ const styles = StyleSheet.create({
     textBox: {
         height: 40,
         width: '90%',
-        marginTop: 20,
+        marginTop: 10,
         alignItems: 'center',
         backgroundColor: 'white',
         borderRadius: 20,
+        marginLeft: 10,
+        paddingLeft: 20,
     },
     buttonContainer : {
         flex: 1
       },
     button: {
-        marginTop: 10,
+        marginTop: 50,
         borderRadius: 20,
         paddingVertical: 14,
         paddingHorizontal: 90,
+        alignSelf: 'center',
+        width: '90%',
         backgroundColor: 'blue'
       },
       buttonText: {
