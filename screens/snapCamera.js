@@ -230,11 +230,11 @@ function snapCamera({ navigation }) {
     )
     setTimeout(
       () => { buttonOpacity = 1},
-      1000
+      2000
     )
     setTimeout(
       () => { buttonOff = false},
-      1000
+      2000
     )
     
   }
