@@ -6,15 +6,19 @@ import config from '../config.json';
 
 function ForgotPassword({navigation}) {
     const [email, onChangeEmailText] = useState('');
-    if (validator.isEmpty(ForgotPassword.[email, onChangeEmailText])) {
-    console.log('You did not enter an email address.');
-    }
-    if (!validator.isEmail(ForgotPassword.[email, onChangeEmailText])) {
-    console.log('You did not enter a valid email address.');
+
+    let emailValidation = () => {
+      if (validator.isEmpty(email)) {
+        console.log('You did not enter an email address.');
+      }
+      if (!validator.isEmail(email)) {
+        console.log('You did not enter a valid email address.');
+      }
     }
 
+
     const SendEmail = async() => {
-        const url = config.aws.url + 'forgot_password';
+        const url = config.AWS.url + 'forgot_password';
         try {
             let response = await fetch(url, {
                 method: 'PUT',
@@ -55,7 +59,10 @@ function ForgotPassword({navigation}) {
           />
           </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={SendEmail}>
+          <TouchableOpacity onPress={() => {
+            emailValidation();
+            SendEmail()
+          }}>
             <View style={styles.button}>
               <Text style={styles.buttonText}> Send Email </Text>
             </View>

@@ -17,11 +17,15 @@ import config from '../config.json';
 function Login({ navigation }) {
   const [username, onChangeUserText] = useState('');
   const [password, onChangePasswordText] = useState('');
-  if (validator.isEmpty(Login.[value, onChangeUserText]) || validator.isEmpty(Login.[password, onChangePasswordText])) {
-    console.log('User Name or Password field is empty');
-  }
-  if (!validator.isAlphanumeric([value, onChangeUserText]) || !validator.isAlphanumeric([password, onChangePasswordText])) {
-    console.log('Please use standard Enlgish characters and numbers only');
+
+  let validateLogin = () => {
+    if(validator.isEmpty(username) || validator.isEmpty(password)){
+      console.log('User Name or Password field is empty');
+    }
+
+    if(!validator.isAlphanumeric(username) || !validator.isAlphanumeric(password)){
+      console.log('Please use standard English characters and numbers only')
+    }
   }
   const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
 
@@ -127,7 +131,12 @@ function Login({ navigation }) {
           />
           <View style={styles.buttonContainer}>
             <TouchableOpacity
-              onPress={submitInfo}
+              onPress={() => {
+                validateLogin()
+                submitInfo()
+                }
+              }
+                
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Login </Text>
