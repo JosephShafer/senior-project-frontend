@@ -142,9 +142,9 @@ function snapCamera({ navigation }) {
           let object = await googleVision(data.base64);
           console.log(object)
           setIdentifiedObject(object);
-          prompt = object;
-          let res = await callWebCrawler(object);
-          setSearchResults(res);
+          // prompt = object;
+          // let res = await callWebCrawler(object);
+          // setSearchResults(res);
           //console.log("SNAPPROMPT: " + prompt);
           console.log("SNAPPROMPT: " + res);
         } catch(err) {
@@ -185,10 +185,10 @@ function snapCamera({ navigation }) {
           console.log(object)
           setIdentifiedObject(object);
           prompt = object;
-          let res = await callWebCrawler(object);
+          // let res = await callWebCrawler(object);
           //console.log("SNAPPROMPT: " + prompt);
-          console.log("SNAPPROMPT: " + res);
-          setSearchResults(res);
+          // console.log("SNAPPROMPT: " + res);
+          // setSearchResults(res);
           //console.log("API's strongest guess: " + res);
         } catch(err) {
           console.log(err);
@@ -203,7 +203,7 @@ function snapCamera({ navigation }) {
     setTimeout(
       () => { 
         // console.log(searchResults)
-        navigation.push("Results", searchResults) 
+        navigation.navigate("Results", { results: searchResults }); 
       },
       5000
     )
@@ -242,6 +242,7 @@ function snapCamera({ navigation }) {
   const identifiedCorrect = async () => {
     setModalVisible(!modalVisible);
     let res = await callWebCrawler(identifiedObject);
+    setSearchResults(res);
     console.log("SNAPPROMPT: " + identifiedObject);
     console.log("SNAPPROMPT: " + res);
   };
