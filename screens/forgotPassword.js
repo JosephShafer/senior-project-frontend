@@ -18,7 +18,8 @@ function ForgotPassword({navigation}) {
 
 
     const SendEmail = async() => {
-        const url = config.AWS.url + 'forgot_password';
+        //const url = config.AWS.url + 'forgot_password';
+        const url = config.myIP.address + 'forgot_password';
         try {
             let response = await fetch(url, {
                 method: 'PUT',

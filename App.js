@@ -15,9 +15,14 @@ import ResultsScreen from './screens/ResultsScreen';
 import AccountCreation from './screens/AccountCreation';
 import Account from './screens/otherService';
 
-import  LoginContext  from './screens/context';
+import LoginContext  from './screens/context';
+import TokenContext  from './screens/TokenContext';
 import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+// https://stackoverflow.com/questions/61264804/how-can-i-use-react-native-asyncstorage-with-react-hooks
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -25,34 +30,59 @@ const cameraStack = createStackNavigator();
 
 
 const LoginScreen = ({ navigation, route }) => {
-  const [userToken, setUserToken] = React.useState(null);
-  React.useEffect(() => {
-    if (route.params?.token) {
-      setUserToken(route.params?.token);
-    }
-  }, [route.params?.token]);
 
-  if (userToken) {
-    return (
-      <LoginContext.Provider value={userToken}>
-        <loginStack.Navigator>
-          <loginStack.Screen name="Home" component={HomeScreen} />
-          <loginStack.Screen name="Search History" component={SearchHistory} />
-        </loginStack.Navigator>
-      </LoginContext.Provider>
-    )
-  } else {
-    return (
-      <LoginContext.Provider>
-        <loginStack.Navigator>
-          <loginStack.Screen name="Login" component={Login} />
-          <loginStack.Screen name="Sign Up" component={AccountCreation} />
-          <loginStack.Screen name="Account" component={Account} />
-          <loginStack.Screen name="Forgot Password" component={ForgotPassword} />  
-        </loginStack.Navigator>
-      </LoginContext.Provider>
-    )
-  }
+  const {token} = React.useContext(TokenContext);
+
+  const LoggedIn = !!token;
+
+  return (
+      <loginStack.Navigator>
+      {LoggedIn ? (
+          <>
+              <loginStack.Screen name="Home" component={HomeScreen} />
+              <loginStack.Screen name="Search History" component={SearchHistory} />
+          </>
+          ) : (
+          <>
+              <loginStack.Screen name="Login" component={Login} />
+              <loginStack.Screen name="Sign Up" component={AccountCreation} />
+              <loginStack.Screen name="Account" component={Account} />
+              <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
+          </>
+      )}
+      </loginStack.Navigator>
+  );
+
+  /** Had to comment this part out for now to make sure regular login works */
+
+  // const [userToken, setUserToken] = React.useState(null);
+  // React.useEffect(() => {
+  //   if (route.params?.token) {
+  //     setUserToken(route.params?.token);
+  //   }
+  // }, [route.params?.token]);
+
+  // if (userToken) {
+  //   return (
+  //     <LoginContext.Provider value={userToken}>
+  //       <loginStack.Navigator>
+  //         <loginStack.Screen name="Home" component={HomeScreen} />
+  //         <loginStack.Screen name="Search History" component={SearchHistory} />
+  //       </loginStack.Navigator>
+  //     </LoginContext.Provider>
+  //   )
+  // } else {
+  //   return (
+  //     <LoginContext.Provider>
+  //       <loginStack.Navigator>
+  //         <loginStack.Screen name="Login" component={Login} />
+  //         <loginStack.Screen name="Sign Up" component={AccountCreation} />
+  //         <loginStack.Screen name="Account" component={Account} />
+  //         <loginStack.Screen name="Forgot Password" component={ForgotPassword} />  
+  //       </loginStack.Navigator>
+  //     </LoginContext.Provider>
+  //   )
+  // }
 };
 
 const Camera = () => {
@@ -77,9 +107,26 @@ function MyTabs() {
 }
 
 function App() {
+
+  /** J.P: my attempt at login */
+  const [token, setToken] = React.useState('');
+
+  const loadData = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      setToken(storedToken);
+
+      return;
+  };
+
+  React.useEffect(() => {
+      loadData();
+  }, []);
+
   return (
     <NavigationContainer>
-      <MyTabs />
+      <TokenContext.Provider value={{token}}>
+        <MyTabs />
+      </TokenContext.Provider>
     </NavigationContainer>
   );
 }
