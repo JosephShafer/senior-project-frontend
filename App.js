@@ -31,58 +31,59 @@ const cameraStack = createStackNavigator();
 
 const LoginScreen = ({ navigation, route }) => {
 
-  const {token} = React.useContext(TokenContext);
+  const [userToken, setUserToken] = React.useState(null);
+  React.useEffect(() => {
+    if (route.params?.token) {
+      setUserToken(route.params?.token);
+    }
+  }, [route.params?.token]);
 
-  const LoggedIn = !!token;
+  if (userToken) {
+    return (
+      <LoginContext.Provider value={userToken}>
+        <loginStack.Navigator>
+          <loginStack.Screen name="Home" component={HomeScreen} />
+          <loginStack.Screen name="Search History" component={SearchHistory} />
+        </loginStack.Navigator>
+      </LoginContext.Provider>
+    )
+  } else {
+    return (
+      <LoginContext.Provider>
+        <loginStack.Navigator>
+          <loginStack.Screen name="Login" component={Login} />
+          <loginStack.Screen name="Sign Up" component={AccountCreation} />
+          <loginStack.Screen name="Account" component={Account} />
+          <loginStack.Screen name="Forgot Password" component={ForgotPassword} />  
+        </loginStack.Navigator>
+      </LoginContext.Provider>
+    )
+  }
 
-  return (
-      <loginStack.Navigator>
-      {LoggedIn ? (
-          <>
-              <loginStack.Screen name="Home" component={HomeScreen} />
-              <loginStack.Screen name="Search History" component={SearchHistory} />
-          </>
-          ) : (
-          <>
-              <loginStack.Screen name="Login" component={Login} />
-              <loginStack.Screen name="Sign Up" component={AccountCreation} />
-              <loginStack.Screen name="Account" component={Account} />
-              <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
-          </>
-      )}
-      </loginStack.Navigator>
-  );
+  // const {token} = React.useContext(TokenContext);
+
+  // const LoggedIn = !!token;
+
+  // return (
+  //     <loginStack.Navigator>
+  //     {LoggedIn ? (
+  //         <>
+  //             <loginStack.Screen name="Home" component={HomeScreen} />
+  //             <loginStack.Screen name="Search History" component={SearchHistory} />
+  //         </>
+  //         ) : (
+  //         <>
+  //             <loginStack.Screen name="Login" component={Login} />
+  //             <loginStack.Screen name="Sign Up" component={AccountCreation} />
+  //             <loginStack.Screen name="Account" component={Account} />
+  //             <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
+  //         </>
+  //     )}
+  //     </loginStack.Navigator>
+  // );
 
   /** Had to comment this part out for now to make sure regular login works */
 
-  // const [userToken, setUserToken] = React.useState(null);
-  // React.useEffect(() => {
-  //   if (route.params?.token) {
-  //     setUserToken(route.params?.token);
-  //   }
-  // }, [route.params?.token]);
-
-  // if (userToken) {
-  //   return (
-  //     <LoginContext.Provider value={userToken}>
-  //       <loginStack.Navigator>
-  //         <loginStack.Screen name="Home" component={HomeScreen} />
-  //         <loginStack.Screen name="Search History" component={SearchHistory} />
-  //       </loginStack.Navigator>
-  //     </LoginContext.Provider>
-  //   )
-  // } else {
-  //   return (
-  //     <LoginContext.Provider>
-  //       <loginStack.Navigator>
-  //         <loginStack.Screen name="Login" component={Login} />
-  //         <loginStack.Screen name="Sign Up" component={AccountCreation} />
-  //         <loginStack.Screen name="Account" component={Account} />
-  //         <loginStack.Screen name="Forgot Password" component={ForgotPassword} />  
-  //       </loginStack.Navigator>
-  //     </LoginContext.Provider>
-  //   )
-  // }
 };
 
 const Camera = () => {
@@ -109,24 +110,24 @@ function MyTabs() {
 function App() {
 
   /** J.P: my attempt at login */
-  const [token, setToken] = React.useState('');
+  // const [token, setToken] = React.useState('');
 
-  const loadData = async () => {
-      const storedToken = await AsyncStorage.getItem('token');
-      setToken(storedToken);
+  // const loadData = async () => {
+  //     const storedToken = await AsyncStorage.getItem('token');
+  //     setToken(storedToken);
 
-      return;
-  };
+  //     return;
+  // };
 
-  React.useEffect(() => {
-      loadData();
-  }, []);
+  // React.useEffect(() => {
+  //     loadData();
+  // }, []);
 
   return (
     <NavigationContainer>
-      <TokenContext.Provider value={{token}}>
+      {/* <TokenContext.Provider value={{token}}> */}
         <MyTabs />
-      </TokenContext.Provider>
+      {/* </TokenContext.Provider> */}
     </NavigationContainer>
   );
 }

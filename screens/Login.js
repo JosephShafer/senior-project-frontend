@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import AccountCreation from './AccountCreation';
@@ -59,19 +59,22 @@ function Login({ navigation }) {
 
     const user = {
       username: username,
-      passsword: password
+      password: password
     }
 
     const url = config.myIP.address + 'signin'
     axios.post(url, user)
     .then (result => {
       if (result.data.success){
-        const user = Object.assign({}, result.data.user);
-
-        AsyncStorage.setItem('token', user._id)
-        .then(action(res => {
-          navigation.navigate('User');
-        }))
+        console.log(result.data.user);
+        const user = {...result.data.user};
+        
+        // console.log(user)
+        AsyncStorage.setItem('token', JSON.stringify(user._id))
+        .then(() => {
+          let snapAndGoBackendResponse = {"User" : user._id}
+          navigation.navigate('User', {token : snapAndGoBackendResponse});
+        })
         .catch(err => alert('Sign In Error!'));
       }
       else {
@@ -79,6 +82,7 @@ function Login({ navigation }) {
       }
     })
     .catch(err => {
+      // console.log(err);
       alert('Failed to sign you in! Try creating an account first.')
     })
   }
