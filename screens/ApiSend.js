@@ -35,28 +35,17 @@ let dummyData = {
                 'https://www.kaplanco.com/product/200020/diy-unfinished-wood-hand-note-holders-12-pieces?c=11%7CAR1045'
         ],
         projects: [
-                'https://www.kaplanco.com/product/30408/wooden-colored-craft-shapes-400-pieces?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/30096/colored-wood-party-shapes?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/200125/unfinished-wood-cars-12-pieces?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/200084/wooden-spring-clothespins-48-pieces?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/30373/wooden-geometric-shapes?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/200187/unfinished-wood-circles-500-pieces?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/29163/wooden-dowels-set-of-12?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/32319/wooden-craft-spools-144-pieces?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/63826/natural-wooden-loose-parts-kit?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/33920P/colored-jumbo-wood-craft-sticks?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/32884/natural-wood-turnings-5-lbs?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/88902/natural-wood-craft-sticks?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/32864/giant-wooden-shapes-set-of-60?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/88926/wooden-craft-pieces-350?c=11%7CAR1045',
-                'https://www.kaplanco.com/product/200020/diy-unfinished-wood-hand-note-holders-12-pieces?c=11%7CAR1045'
+                "https://www.artycraftykids.com/art/creative-play-woodland-trees/",
+                "https://www.artycraftykids.com/christmas/wood-slice-christmas-ornaments/",
+                "https://www.artycraftykids.com/craft/woodland-animal-easter-egg-craft/",
         ],
         crawled: false
 };
 
 export async function callWebCrawler(target) {
         if(NO_BACKEND == true){
-                return dummyData;
+                let fakeData = {...dummyData};
+                return fakeData;
         }
         try {
                 console.log("Attempting connection to AWS server...");
