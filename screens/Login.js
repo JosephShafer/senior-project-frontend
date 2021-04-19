@@ -215,6 +215,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 20,
+    paddingLeft: 20
   },
   buttonContainer: {
     flex: 1

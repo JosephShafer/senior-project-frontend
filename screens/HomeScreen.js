@@ -62,15 +62,16 @@ function HomeScreen({ navigation, route }) {
 
 
   return (
-    <View style={{ flex: 0.25, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Snap & Go placeholder login Screen</Text>
-      <Text>Welcome back, {userName}!</Text>
+    <View style={{ flex: 1, alignItems: 'center' }}>
+      <Text style={{fontSize:25, paddingTop: 30, textAlign: 'center'}}>Snap & Go User Screen</Text>
+      <Text style={{fontSize:30}}>Welcome back, {userName}!</Text>
         <TouchableOpacity
-          style={{}}
           onPress={()=> navigation.navigate('Search History') }
         >
-          <View>
-            <Text style={{fontSize: 30, paddingTop: 30,}}> Search History </Text>
+          <View style={{backgroundColor: 'blue', borderRadius: 20, marginTop: 50,}}>
+            <Text 
+            style={{fontSize: 30, padding: 8, alignSelf:'center', color:'#fff', fontWeight:'bold'}}
+            > Search History </Text>
           </View>
         </TouchableOpacity>
     </View>

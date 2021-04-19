@@ -67,7 +67,11 @@ const Camera = () => {
 
 function MyTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+    tabBarOptions={{
+      labelStyle: { fontSize: 18},
+    }}
+    >
       {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
       <Tab.Screen name="User" component={LoginScreen} />
       {/* Results only part of router for testing */}
