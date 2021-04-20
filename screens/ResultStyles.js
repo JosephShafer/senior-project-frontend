@@ -8,7 +8,7 @@ const ResultStyles = StyleSheet.create({
     card: {
         margin: 4,
         borderWidth: 2,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#f3f3f3",
         borderColor: "#3f3f3f",
         borderRadius: 10,
     },
@@ -16,6 +16,7 @@ const ResultStyles = StyleSheet.create({
         margin: 8,
         fontSize: 25,
         color: "#0B0080",
+        textAlign: 'center',
     },
         
 });
