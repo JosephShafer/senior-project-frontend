@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar } from 'react-native';
+import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar, TouchableOpacity } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import loginContext from './context';
 import config from '../config.json';
 import { callWebCrawler } from './ApiSend.js';
 import filter from './filter';
+import ResultStyles from './ResultStyles';
 
 function ProductsResults({ route, navigation }){
     const [productsTitles, setProductsTitles] = useState(route.params.products);
@@ -51,14 +52,21 @@ function ProductsResults({ route, navigation }){
     }, [])
 
     return (
-        <View>
+        <View
+          style={ResultStyles.container}
+        >
             <FlatList
                 data={productsTitles}
                 keyExtractor={(item, index) => item + index}
-                renderItem={({ item }) => <Button
+                renderItem={({ item }) => <TouchableOpacity
+                style={ResultStyles.card}
                     title={`${item['extractedTitle']}`}
                     onPress={() => WebBrowser.openBrowserAsync(`${item['link']}`)}
-                />}
+                >
+                    <Text
+                      style={ResultStyles.text}
+                    >{`${item['extractedTitle']}`}</Text>
+                </TouchableOpacity>}
                 extraData={listToUpdate}
             />
             
