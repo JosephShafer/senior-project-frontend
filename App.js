@@ -26,6 +26,7 @@ const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
 const cameraStack = createStackNavigator();
 const ResultTabs = createMaterialTopTabNavigator();
+let globToken = 'empty';
 
 
 const Results = ({ navigation, route }) => {
@@ -43,6 +44,7 @@ const Results = ({ navigation, route }) => {
   // }, [route.params?.results]);
 
   return (
+    <LoginContext.Provider value={globToken}>
       <ResultTabs.Navigator>
         <ResultTabs.Screen
           name="Products"
@@ -54,6 +56,7 @@ const Results = ({ navigation, route }) => {
           component={ProjectResults}
           initialParams={results} />
       </ResultTabs.Navigator>
+    </LoginContext.Provider>
   );
 }
 
@@ -67,6 +70,7 @@ const LoginScreen = ({ navigation, route }) => {
   }, [route.params?.token]);
 
   if (userToken) {
+    globToken = userToken;
     return (
       <LoginContext.Provider value={userToken}>
         <loginStack.Navigator>
@@ -89,7 +93,7 @@ const LoginScreen = ({ navigation, route }) => {
   }
 };
 
-const Camera = () => {
+const Camera = ({ navigation, route }) => {
   return (
     <cameraStack.Navigator>
       <cameraStack.Screen name="Camera" component={snapCamera} />

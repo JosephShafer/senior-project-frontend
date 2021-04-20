@@ -9,12 +9,6 @@ import { Camera } from 'expo-camera';
 import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
-
-// // ResultsScreen navigation
-// import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-import ResultsScreen from './ResultsScreen';
-
 import config from '../config.json';
 import googleVision, { callWebCrawler } from './ApiSend.js';
 
@@ -22,15 +16,6 @@ import googleVision, { callWebCrawler } from './ApiSend.js';
 let buttonOpacity = 1;
 let buttonOff = false;
 let prompt = 'prompt';
-
-// // function that returns ResultsScreen in a view
-// function Results() {
-//   return (
-//     <View>
-//       <ResultsScreen/>
-//     </View>
-//   );
-// }
 
 // camera screen function
 function snapCamera({ navigation }) {
@@ -218,7 +203,7 @@ function snapCamera({ navigation }) {
   function loadResults() {
     buttonOpacity = 0;
     buttonOff = true;
-    
+
     loadingAd();
     loadResultsScreen();
     console.log("TEXTINPUT: "+identifiedObject);
