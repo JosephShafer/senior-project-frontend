@@ -19,7 +19,9 @@ function AccountCreation() {
             return;
         }
         
-        const url = config.aws.url + 'signup';
+        // const url = config.aws.url + 'signup';
+        const url = config.myIP.address + 'signup';
+
         try {
             let response = await fetch(url, {
                 method: 'POST',

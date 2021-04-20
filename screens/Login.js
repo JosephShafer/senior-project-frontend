@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 // import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
 import AccountCreation from './AccountCreation';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
+import axios from 'axios';
 import validator from 'validator';
 WebBrowser.maybeCompleteAuthSession();
 
@@ -50,60 +51,81 @@ function Login({ navigation }) {
     return null;
   }
 
-
-  // really basic HTTP request to the EC instance I got going
   const submitInfo = async () => {
-/*     const url = config.AWS.url;
-    try {
-      let response = await fetch(url);
-      let fetchData = await response.text();
-      console.log(fetchData);
-      return fetchData;
-    } catch (error) {
-      console.log("Server is probably not running if you're seeing error");
-      console.error(error);
-    } */
-
     if( !username || !password ){
       alert('Username and password are required')
       return;
     }
 
-    const url = config.AWS.url + 'signin';
-    try {
-      let response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: username,
-          password: password
-        })
-      });
-      let data = await response.json();
-
-      if(data.success){
-        // https://blog.jscrambler.com/how-to-use-react-native-asyncstorage/
-        /** (JP) TODO: LOGIN ISSUE IN THE BACKEND 
-         *  Check AsyncStorage
-        */
-        await AsyncStorage.setItem('userToken', user._id)
-        .then( () => {
-          navigation.navigate('HomeScreen');
-        })
-        .catch(() => {
-          alert('There was a sign in error:!');
-        })
-      } else{
-        alert('An error has occurred. Please check the email and password!');
-      }
-    } catch (error) {
-      alert('Unable to sign you in.');
-      console.log(error);
+    const user = {
+      username: username,
+      password: password
     }
+
+    const url = config.myIP.address + 'signin'
+    axios.post(url, user)
+    .then (result => {
+      if (result.data.success){
+        console.log(result.data.user);
+        const user = {...result.data.user};
+        
+        // console.log(user)
+        AsyncStorage.setItem('token', JSON.stringify(user._id))
+        .then(() => {
+          let snapAndGoBackendResponse = {"User" : user._id}
+          navigation.navigate('User', {token : snapAndGoBackendResponse});
+        })
+        .catch(err => alert('Sign In Error!'));
+      }
+      else {
+        alert('Unable to login. Please check your username and password.')
+      }
+    })
+    .catch(err => {
+      // console.log(err);
+      alert('Failed to sign you in! Try creating an account first.')
+    })
   }
+
+  // const submitInfo = async () => {
+
+  //   if( !username || !password ){
+  //     alert('Username and password are required')
+  //     return;
+  //   }
+
+  //   const url = config.AWS.url + 'signin';
+
+  //   try {
+  //     let response = await fetch(url, {
+  //       method: 'POST',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({
+  //         username: username,
+  //         password: password
+  //       })
+  //     });
+  //     let data = await response.json();
+
+  //     if(data.success){
+  //       await AsyncStorage.setItem('userToken', user._id)
+  //       .then( () => {
+  //         navigation.navigate('HomeScreen');
+  //       })
+  //       .catch(() => {
+  //         alert('There was a sign in error:!');
+  //       })
+  //     } else{
+  //       alert('An error has occurred. Please check the email and password!');
+  //     }
+  //   } catch (error) {
+  //     alert('Unable to sign you in.');
+  //     console.log(error);
+  //   }
+  // }
  
   return (
     <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.jpeg')}>
