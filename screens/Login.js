@@ -28,7 +28,7 @@ function Login({ navigation }) {
       console.log('Please use standard English characters and numbers only')
     }
   }
-  const [backgroundImage, error] = useAssets([require('../assets/craftyImage.jpeg')]);
+  const [backgroundImage, error] = useAssets([require('../assets/craftyImage.png')]);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: config.GOOGLE_CLIENT.ID,
@@ -128,7 +128,7 @@ function Login({ navigation }) {
   // }
  
   return (
-    <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.jpeg')}>
+    <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.png')}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.loginContainer}>
