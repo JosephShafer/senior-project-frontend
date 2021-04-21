@@ -14,6 +14,8 @@ function ProductsResults({ route, navigation }) {
   const globToken = React.useContext(loginContext);
   //const [userEmail, setUserEmail] = useState("empty");
   let userEmail = '';
+  let resultsArray = [];
+  let resultExists = false;
 
   if (globToken['AuthOwner'] === 'Google') {
 
@@ -38,12 +40,17 @@ function ProductsResults({ route, navigation }) {
             .then(response => response.json())
             .then(data => {
               if (data) {
-                alert('Successful');
+                //alert('Successful');
                 //console.log(data);
                 for(var i = 0; i < data.length; i++) {
                   if(userEmail === data[i].email){
                     emailFound = true;
+                    resultsArray.push(data[i].searchTerms);
+                    resultExists = resultsArray[0].includes(route.params.searchTerm);
+                    //console.log("BOOL"+resultExists);
+                    //console.log(i+"#"+resultsArray);
                   }
+                  
                 }
                 if(emailFound === false) {
                   fetch(url, {
@@ -60,15 +67,15 @@ function ProductsResults({ route, navigation }) {
                   .then(response => response.json())
                   .then(data => {
                   if(data.success){
-                      alert('Search List Creation successful');
+                      //alert('Search List Creation successful');
                   }
                   else{
-                      alert('Failed! Search History Not Saved.');
+                      //alert('Failed! Search History Not Saved.');
                   }
                   })
                   .catch(e => console.log(e))
                 }
-                else if(emailFound === true) {
+                else if(emailFound === true && resultExists === false) {
                   fetch(url, {
                     method: 'PUT',
                     headers: {
@@ -77,23 +84,23 @@ function ProductsResults({ route, navigation }) {
                       },
                     body: JSON.stringify({
                         email: userEmail,
-                        searchTerms: [route.params.searchTerm]
+                        searchTerms: route.params.searchTerm
                     })
                   })
                   .then(response => response.json())
                   .then(data => {
                   if(data.success){
-                      alert('Update successful');
+                      //alert('Update successful');
                   }
                   else{
-                      alert('Failed Update.');
+                      //alert('Failed Update.');
                   }
                   })
                   .catch(e => console.log(e))
                 }
               }
               else {
-                alert('Failed! Search History Not Saved.');
+                //alert('Failed! Search History Not Saved.');
               }
             })
             .catch(e => console.log(e))
@@ -102,74 +109,6 @@ function ProductsResults({ route, navigation }) {
 
     }, [])
   }
-  //console.log("EMAIL_VAR"+userEmail);
-
-
-  // async function searches() {
-  //   console.log(userEmail)
-  //   if (userEmail !== "empty") {
-  //     /*
-  //     useEffect(() => {
-  //       fetch(url, {
-  //         //"credentials": "include",
-  //         "method": "GET",
-  //       })
-  //         .then(response => response.json())
-  //         .then(json => {
-  //           //console.log("NAME HERE: "+json.names[0].displayName);
-  //           console.log("EMAIL HERE: ");
-  //           console.log(json);
-  //         })
-  //     }, [])
-  //     */
-
-  //     /*
-  //     try {
-  //         let response = await fetch(url, {
-  //             method: 'POST',
-  //             headers: {
-  //                 Accept: 'application/json',
-  //                 'Content-Type': 'application/json',
-  //               },
-  //             body: JSON.stringify({
-  //                 email: userEmail,
-  //                 searchTerms: [route.params.searchTerm]
-  //             })
-  //         });
-  //         let data = await response.json();
-  //         if(data.success){
-  //             alert('Search List Creation successful');
-  //         }
-  //         else{
-  //             alert('Failed! Search History Not Saved.');
-  //         }
-  //     } catch (error) {
-  //         alert('Unable to create search history');
-  //         console.log(error);
-  //     }*/
-
-  //     try {
-  //       let response = await fetch(url);
-  //       let data = await response.json();
-  //       if (data) {
-  //         alert('Successful');
-  //         console.log(data[0].searchTerms);
-  //       }
-  //       else {
-  //         alert('Failed! Search History Not Saved.');
-  //       }
-  //     } catch (error) {
-  //       alert('Unable to create search history');
-  //       console.log(error);
-  //     }
-
-  //   }
-  // }
-
-  // useEffect(() => {
-  //   console.log("in use effect")
-  //   searches()
-  // }, [])
 
   useEffect(() => {
     // console.log(route.params)
