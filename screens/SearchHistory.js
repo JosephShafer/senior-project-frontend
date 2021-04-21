@@ -3,9 +3,10 @@ import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
 import * as Location from 'expo-location';
 import loginContext from './context';
 import config from '../config.json';
+import { callWebCrawler } from './ApiSend.js';
 
 function SearchHistory({ navigation, route }) {
-    const [random, setRandom] = useState(Math.random());
+  const [searchResults, setSearchResults] = useState("");
     const userToken = React.useContext(loginContext);
     let [userEmail, setUserEmail] = useState('');
     let [resultsArray, setResultArray] = useState();
@@ -46,7 +47,7 @@ function SearchHistory({ navigation, route }) {
                   console.log(data)
                   setResultArray([...data.usersSearches]);
                   console.log(resultsArray);
-                    // if (data) {
+                    // if (data) { 
                     //   // setResultArray([...data.searchTerms]);
                     //   console.log(data);
                     //     for(var i = 0; i < data.length; i++) {
@@ -67,6 +68,13 @@ function SearchHistory({ navigation, route }) {
         }, [])
     }
 
+    async function loadResult(item) {
+      let res = await callWebCrawler(item);
+      setSearchResults(res);
+      navigation.navigate("Results", { results: searchResults }); 
+      
+    };
+
     // console.log(resultsArray);
 
     return(
@@ -76,8 +84,9 @@ function SearchHistory({ navigation, route }) {
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => <Button
           title={`${item}`}
+          onPress={() => loadResult(`${item}`)}
         />}
-        // extraData={listToUpdate}
+        
       />
 
     </View>

@@ -82,6 +82,7 @@ const LoginScreen = ({ navigation, route }) => {
         <loginStack.Navigator>
           <loginStack.Screen name="Home" component={HomeScreen} />
           <loginStack.Screen name="Search History" component={SearchHistory} />
+          <loginStack.Screen name="Results" component={Results} />
         </loginStack.Navigator>
       </LoginContext.Provider>
     )

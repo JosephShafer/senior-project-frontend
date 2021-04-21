@@ -122,7 +122,7 @@ function ProductsResults({ route, navigation }) {
         updateList(true)
       })
       .catch(e => console.log(e))
-  }, [])
+  }, []) 
 
   return (
     <View>
