@@ -12,7 +12,8 @@ function ProductsResults({ route, navigation }) {
 
 
   const globToken = React.useContext(loginContext);
-  const [userEmail, setUserEmail] = useState("empty");
+  //const [userEmail, setUserEmail] = useState("empty");
+  let userEmail = '';
 
   if (globToken['AuthOwner'] === 'Google') {
 
@@ -28,16 +29,68 @@ function ProductsResults({ route, navigation }) {
         .then(json => {
           //console.log("NAME HERE: "+json.names[0].displayName);
           //console.log("EMAIL HERE: "+json.emailAddresses[0].value);
-          setUserEmail(json.emailAddresses[0].value);
+          userEmail = json.emailAddresses[0].value;
         })
         .then(() => {
           const url = config.myIP.address + 'searchhistory';
+          let emailFound = false;
           fetch(url)
             .then(response => response.json())
             .then(data => {
               if (data) {
                 alert('Successful');
-                console.log(data[0].searchTerms);
+                //console.log(data);
+                for(var i = 0; i < data.length; i++) {
+                  if(userEmail === data[i].email){
+                    emailFound = true;
+                  }
+                }
+                if(emailFound === false) {
+                  fetch(url, {
+                     method: 'POST',
+                     headers: {
+                         Accept: 'application/json',
+                         'Content-Type': 'application/json',
+                       },
+                     body: JSON.stringify({
+                         email: userEmail,
+                         searchTerms: [route.params.searchTerm]
+                     })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                  if(data.success){
+                      alert('Search List Creation successful');
+                  }
+                  else{
+                      alert('Failed! Search History Not Saved.');
+                  }
+                  })
+                  .catch(e => console.log(e))
+                }
+                else if(emailFound === true) {
+                  fetch(url, {
+                    method: 'PUT',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                      },
+                    body: JSON.stringify({
+                        email: userEmail,
+                        searchTerms: [route.params.searchTerm]
+                    })
+                  })
+                  .then(response => response.json())
+                  .then(data => {
+                  if(data.success){
+                      alert('Update successful');
+                  }
+                  else{
+                      alert('Failed Update.');
+                  }
+                  })
+                  .catch(e => console.log(e))
+                }
               }
               else {
                 alert('Failed! Search History Not Saved.');
