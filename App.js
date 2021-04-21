@@ -92,6 +92,7 @@ const LoginScreen = ({ navigation, route }) => {
           <loginStack.Screen name="Sign Up" component={AccountCreation} />
           <loginStack.Screen name="Account" component={Account} />
           <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
+          <loginStack.Screen name="Reset" component={Reset} />
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
