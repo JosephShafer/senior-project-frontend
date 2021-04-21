@@ -59,12 +59,8 @@ function ResetPassword  ({ navigation, route })  {
         axios
           .put(url, info)
           .then(result => {
-            if (result.data.onButtonPress) {
-              alert("Congrats! You have successfully reset your password. Please sign in with the new password!");
-              navigation.navigate("Login");
-            } else {
-              alert("Sorry! Some thing wrong when saving the new password. Please retry");
-            }
+            alert("Congrats! You have successfully reset your password. Please sign in with the new password!");
+            navigation.navigate("Login");
           })
           .catch(err => console.log("Error when saving the new password"));
         }  
@@ -81,12 +77,14 @@ function ResetPassword  ({ navigation, route })  {
     
     <View style={styles.sendContainer}>
       <TextInput
+        secureTextEntry
         placeholder="Password"
         value={password}
         onChangeText={text => setPassword(text)}
         style={[styles.textbox]}
       />
       <TextInput
+        secureTextEntry
         placeholder="Retype Password"
         value={rePassword}
         onChangeText={text => setRePassword(text)}

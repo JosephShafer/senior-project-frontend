@@ -41,10 +41,6 @@ function AccountCreation() {
             if(data.success){
                 alert('Account creation successful');
             }
-            /**
-             * (JP) TODO: the alert in else statement is not working when someone tries 
-             *       to sign up with an already used username or email
-            */
             else{
                 alert('Failed! If you already have an account, please log in.');
             }

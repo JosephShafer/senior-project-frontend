@@ -38,7 +38,6 @@ function ForgotPassword({navigation}) {
                 navigation.navigate('Login');
               } 
               else{
-                /** (JP) TODO: prevent an email being sent to undefined */
                 alert("User not found!");
             }
         } catch(err) {
