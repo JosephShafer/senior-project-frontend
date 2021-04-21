@@ -6,13 +6,15 @@ import config from '../config.json';
 import { callWebCrawler } from './ApiSend.js';
 import filter from './filter';
 
+let firstTime = true;
+
 function ProductsResults({ route, navigation }){
     const [productsTitles, setProductsTitles] = useState(route.params.products);
     const [listToUpdate, updateList] = useState(false);
 
 
     const globToken = React.useContext(loginContext);
-    console.log(globToken);
+    const [userEmail, setUserEmail] = useState("empty");
     
     if (globToken['AuthOwner'] === 'Google') {
       
@@ -26,15 +28,61 @@ function ProductsResults({ route, navigation }){
         })
           .then(response => response.json())
           .then(json => {
-            console.log("NAME HERE: "+json.names[0].displayName);
-            console.log("EMAIL HERE: "+json.emailAddresses[0].value);
+            //console.log("NAME HERE: "+json.names[0].displayName);
+            //console.log("EMAIL HERE: "+json.emailAddresses[0].value);
+            setUserEmail(json.emailAddresses[0].value);
           })
       }, [])
     }
-    //const userToken = this.props.navigation.getParam('token');
-    //console.log("TOKEN"+userToken);
+    //console.log("EMAIL_VAR"+userEmail);
+    const url = config.myIP.address + 'searchhistory';
 
+    async function searches(){
+      if(userEmail !== "empty") {
 
+        useEffect(() => {
+          fetch(url, {
+            //"credentials": "include",
+            "method": "GET",
+          })
+            .then(response => response.json())
+            .then(json => {
+              //console.log("NAME HERE: "+json.names[0].displayName);
+              console.log("EMAIL HERE: "+json.email[0]);
+            })
+        }, [])
+
+        /*
+        try {
+            let response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                  },
+                body: JSON.stringify({
+                    email: userEmail,
+                    searchTerms: [route.params.searchTerm]
+                })
+            });
+            let data = await response.json();
+            if(data.success){
+                alert('Search List Creation successful');
+            }
+            else{
+                alert('Failed! Search History Not Saved.');
+            }
+        } catch (error) {
+            alert('Unable to create search history');
+            console.log(error);
+        }*/
+      }
+    }
+
+    if (firstTime === true) {
+      searches();
+      firstTime = false;
+    }
 
     useEffect(() => {
         // console.log(route.params)
