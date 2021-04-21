@@ -69,10 +69,11 @@ function SearchHistory({ navigation, route }) {
     }
 
     async function loadResult(item) {
-      let res = await callWebCrawler(item);
-      setSearchResults(res);
-      navigation.navigate("Results", { results: searchResults }); 
-      
+      callWebCrawler(item)
+      .then(res => {
+        console.log(searchResults)
+        navigation.navigate("Results", { results: res }); 
+      })
     };
 
     // console.log(resultsArray);
