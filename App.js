@@ -1,7 +1,7 @@
 // In App.js in a new project
 
-import React, {useRef, useState, useEffect } from 'react';
-import {AppState} from 'react-native';
+import React, { useRef, useState, useEffect } from 'react';
+import { AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -20,7 +20,7 @@ import ProjectResults from './screens/ProjectResults';
 
 import LoginContext from './screens/context';
 
-import TokenContext  from './screens/TokenContext';
+import TokenContext from './screens/TokenContext';
 import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
 
@@ -94,13 +94,15 @@ const LoginScreen = ({ navigation, route }) => {
     console.log("AppState", appState.current);
   };
 
-  React.useEffect(()=>{
+  React.useEffect(() => {
     // if app is opened from being closed
     Linking.getInitialURL().then((res) => {
       console.log(res);
       let resetPasswordClosedApp = Linking.parse(res);
       console.log(resetPasswordClosedApp);
-      navigation.navigate("Reset Password", {resetInfo: resetPasswordClosedApp})
+      if (resetPasswordClosedApp.queryParams.ResetPasswordToken) {
+        navigation.navigate("Reset Password", { resetInfo: resetPasswordClosedApp })
+      }
     });
   }, [])
 
@@ -109,7 +111,9 @@ const LoginScreen = ({ navigation, route }) => {
     let resetPasswordURLChange = Linking.parse(res.url);
     console.log("a reset password link:")
     console.log(resetPasswordURLChange);
-    navigation.navigate("Reset Password", {resetInfo: resetPasswordURLChange})
+    if (resetPasswordURLChange.queryParams.ResetPasswordToken) {
+      navigation.navigate("Reset Password", { resetInfo: resetPasswordURLChange })
+    }
   }
 
   const [userToken, setUserToken] = React.useState(null);
@@ -202,9 +206,9 @@ const Camera = ({ navigation, route }) => {
 function MyTabs() {
   return (
     <Tab.Navigator
-    tabBarOptions={{
-      labelStyle: { fontSize: 18},
-    }}
+      tabBarOptions={{
+        labelStyle: { fontSize: 18 },
+      }}
     >
       {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
       <Tab.Screen name="User" component={LoginScreen} />
@@ -217,7 +221,7 @@ function App() {
 
   return (
     <NavigationContainer>
-        <MyTabs />
+      <MyTabs />
     </NavigationContainer>
   );
 }
