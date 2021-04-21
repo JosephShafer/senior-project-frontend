@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import * as Linking from 'expo-linking';
 
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
@@ -24,8 +24,7 @@ import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// https://stackoverflow.com/questions/61264804/how-can-i-use-react-native-asyncstorage-with-react-hooks
+import ResetPWScreen from './screens/ResetPWScreen';
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -98,32 +97,53 @@ const LoginScreen = ({ navigation, route }) => {
     )
   }
 
-  // const {token} = React.useContext(TokenContext);
-
-  // const LoggedIn = !!token;
-
-  // return (
-  //     <loginStack.Navigator>
-  //     {LoggedIn ? (
-  //         <>
-  //             <loginStack.Screen name="Home" component={HomeScreen} />
-  //             <loginStack.Screen name="Search History" component={SearchHistory} />
-  //         </>
-  //         ) : (
-  //         <>
-  //             <loginStack.Screen name="Login" component={Login} />
-  //             <loginStack.Screen name="Sign Up" component={AccountCreation} />
-  //             <loginStack.Screen name="Account" component={Account} />
-  //             <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
-  //         </>
-  //     )}
-  //     </loginStack.Navigator>
-  // );
-
-  /** Had to comment this part out for now to make sure regular login works */
-
 };
 
+// https://reactnavigation.org/docs/use-linking/
+const prefix = Linking.makeUrl("/");
+const ResetStack = createStackNavigator();
+
+const Reset = () => {
+  const ref = React.useRef();
+
+  const { getInitialState } = useLinking(ref, {
+    prefixes: [prefix],
+    config: {
+      screens: {
+        ResetPWScreen: 'reset_password/:token'
+      }
+    }
+  });
+
+  const [isReady, setIsReady] = React.useState(false);
+  const [initialState, setInitialState] = React.useState();
+
+  React.useEffect(() => {
+    getInitialState()
+    .catch(() => {})
+    .then(state => {
+      if(state !== undefined){
+        setInitialState(state);
+      }
+
+      setIsReady(true);
+    });
+
+  }, [getInitialState]);
+
+  if(!isReady){
+    return null;
+  }
+
+  return (
+    <NavigationContainer initialState={initialState} ref={ref}>
+      <ResetStack.Navigator>
+        <ResetStack.Screen name="Forgot Password" component={ForgotPassword} />
+        <ResetStack.Screen name="Reset Password" component={ResetPWScreen} />
+      </ResetStack.Navigator>
+    </NavigationContainer>
+  );
+}
 const Camera = ({ navigation, route }) => {
   return (
     <cameraStack.Navigator>
@@ -149,25 +169,9 @@ function MyTabs() {
 
 function App() {
 
-  /** J.P: my attempt at login */
-  // const [token, setToken] = React.useState('');
-
-  // const loadData = async () => {
-  //     const storedToken = await AsyncStorage.getItem('token');
-  //     setToken(storedToken);
-
-  //     return;
-  // };
-
-  // React.useEffect(() => {
-  //     loadData();
-  // }, []);
-
   return (
     <NavigationContainer>
-      {/* <TokenContext.Provider value={{token}}> */}
         <MyTabs />
-      {/* </TokenContext.Provider> */}
     </NavigationContainer>
   );
 }
