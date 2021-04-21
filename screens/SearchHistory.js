@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
 import * as Location from 'expo-location';
 import loginContext from './context';
 import config from '../config.json';
+import ResultStyles from './ResultStyles';
 import { callWebCrawler } from './ApiSend.js';
 
 function SearchHistory({ navigation, route }) {
@@ -79,14 +80,20 @@ function SearchHistory({ navigation, route }) {
     // console.log(resultsArray);
 
     return(
-      <View>
+      <View style={ResultStyles.container}>
       <FlatList
         data={resultsArray}
         keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => <Button
-          title={`${item}`}
-          onPress={() => loadResult(`${item}`)}
-        />}
+        renderItem={({ item }) => <TouchableOpacity
+        style={ResultStyles.card}
+            title={`${item}`}
+            onPress={() => loadResult(`${item}`)}
+        >
+            <Text
+              style={ResultStyles.text}
+            >{`${item}`}</Text>
+        </TouchableOpacity>
+        }
         
       />
 
