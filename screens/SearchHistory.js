@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
 import * as Location from 'expo-location';
 import loginContext from './context';
 import config from '../config.json';
@@ -7,8 +7,8 @@ import config from '../config.json';
 function SearchHistory({ navigation, route }) {
     const [random, setRandom] = useState(Math.random());
     const userToken = React.useContext(loginContext);
-    let userEmail = '';
-    let resultsArray = [];
+    let [userEmail, setUserEmail] = useState('');
+    let [resultsArray, setResultArray] = useState();
 
     if (userToken['AuthOwner'] === 'Google') {
 
@@ -23,26 +23,42 @@ function SearchHistory({ navigation, route }) {
             .then(response => response.json())
             .then(json => {
               //console.log("NAME HERE: "+json.names[0].displayName);
-              console.log("EMAIL HIST: "+json.emailAddresses[0].value);
-              userEmail = json.emailAddresses[0].value;
+              let returnedEmail = json.emailAddresses[0].value;
+              console.log("EMAIL HIST: "+returnedEmail);
+              return returnedEmail;
             })
-            .then(() => {
-              const url = config.myIP.address + 'searchhistory';
-              let emailFound = false;
-              fetch(url)
+            .then((email) => {
+              console.log(email)
+              const url = config.myIP.address + 'searchhistory/getUsersResults';
+              console.log(userEmail);
+              fetch(url, {
+                method: 'POST',
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',                   
+                },
+                body: JSON.stringify({
+                    email: email,
+                }),
+              })
                 .then(response => response.json())
                 .then(data => {
-                    if (data) {
-                        for(var i = 0; i < data.length; i++) {
-                          if(userEmail === data[i].email){
-                            emailFound = true;
-                            for(var j = 0; j < data[i].searchTerms.length; j++)
-                            resultsArray.push(data[i].searchTerms[j]);
-                            console.log(resultsArray);
-                          }
+                  console.log(data)
+                  setResultArray([...data.usersSearches]);
+                  console.log(resultsArray);
+                    // if (data) {
+                    //   // setResultArray([...data.searchTerms]);
+                    //   console.log(data);
+                    //     for(var i = 0; i < data.length; i++) {
+                    //       if(userEmail === data[i].email){
+                    //         emailFound = true;
+                    //         // for(var j = 0; j < data[i].searchTerms.length; j++)
+                    //         // resultsArray.push(data[i].searchTerms[j]);
+                    //         // console.log(resultsArray);
+                    //       }
 
-                        }
-                    }
+                    //     }
+                    // }
                 })
                 .catch(e => console.log(e))
             })
@@ -51,16 +67,30 @@ function SearchHistory({ navigation, route }) {
         }, [])
     }
 
-    console.log(resultsArray);
-          
+    // console.log(resultsArray);
+
     return(
-        <View style={{ flex: 0.15, alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Snap & Go Past Results</Text>
-            { resultsArray.map((item, key)=>(
-            <Text key={key} > { item } </Text>)
-            )}
-        </View>
+      <View>
+      <FlatList
+        data={resultsArray}
+        keyExtractor={(item, index) => item + index}
+        renderItem={({ item }) => <Button
+          title={`${item}`}
+        />}
+        // extraData={listToUpdate}
+      />
+
+    </View>
     );
+          
+    // return(
+    //     <View style={{ flex: 0.15, alignItems: 'center', justifyContent: 'center' }}>
+    //         <Text>Snap & Go Past Results</Text>
+    //         { resultsArray.map((item, key)=>(
+    //         <Text key={key} > { item } </Text>)
+    //         )}
+    //     </View>
+    // );
 }
 
 export default SearchHistory;
