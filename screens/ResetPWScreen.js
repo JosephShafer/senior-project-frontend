@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity,
     KeyboardAvoidingView, Linking} from 'react-native';
 import axios from 'axios';
 import { useEffect } from 'react';
+// import config from '../config.json';
 
 // export const ResetPassword = ({navigation, route}) => {}
 function ResetPassword  ({ navigation, route })  {

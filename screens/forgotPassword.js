@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
 import validator from 'validator';
-
+import * as Linking from 'expo-linking';
 import config from '../config.json';
 
 function ForgotPassword({navigation}) {
@@ -29,6 +29,7 @@ function ForgotPassword({navigation}) {
                 },
                 body: JSON.stringify({
                     email: email,
+                    redirectURL: Linking.makeUrl()
                 }),
             });
             let data = await response.json();

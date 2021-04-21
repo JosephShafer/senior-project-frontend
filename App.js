@@ -1,6 +1,7 @@
 // In App.js in a new project
 
-import React, { useState, useEffect } from 'react';
+import React, {useRef, useState, useEffect } from 'react';
+import {AppState} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -66,6 +67,50 @@ const Results = ({ navigation, route }) => {
 
 
 const LoginScreen = ({ navigation, route }) => {
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    AppState.addEventListener("change", _handleAppStateChange);
+
+    Linking.addEventListener('url', urlChange);
+
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+      Linking.removeEventListener('url', urlChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+    }
+
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+    console.log("AppState", appState.current);
+  };
+
+  React.useEffect(()=>{
+    // if app is opened from being closed
+    Linking.getInitialURL().then((res) => {
+      console.log(res);
+      let resetPasswordClosedApp = Linking.parse(res);
+      console.log(resetPasswordClosedApp);
+      navigation.navigate("Reset Password", {resetObj: resetPasswordClosedApp})
+    });
+  }, [])
+
+  const urlChange = (res) => {
+    // if app is in background and link opens it
+    let resetPasswordURLChange = Linking.parse(res.url);
+    console.log("a reset password link:")
+    console.log(resetPasswordURLChange);
+    navigation.navigate("Reset Password", {resetObj: resetPasswordURLChange})
+  }
 
   const [userToken, setUserToken] = React.useState(null);
   React.useEffect(() => {
@@ -92,7 +137,7 @@ const LoginScreen = ({ navigation, route }) => {
           <loginStack.Screen name="Sign Up" component={AccountCreation} />
           <loginStack.Screen name="Account" component={Account} />
           <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
-          <loginStack.Screen name="Reset" component={Reset} />
+          <loginStack.Screen name="Reset Password" component={ResetPWScreen} />
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
@@ -101,50 +146,50 @@ const LoginScreen = ({ navigation, route }) => {
 };
 
 // https://reactnavigation.org/docs/use-linking/
-const prefix = Linking.makeUrl("/");
-const ResetStack = createStackNavigator();
+// const prefix = Linking.makeUrl("/");
+// const ResetStack = createStackNavigator();
 
-const Reset = () => {
-  const ref = React.useRef();
+// const Reset = () => {
+//   const ref = React.useRef();
 
-  const { getInitialState } = useLinking(ref, {
-    prefixes: [prefix],
-    config: {
-      screens: {
-        ResetPWScreen: 'reset_password/:token'
-      }
-    }
-  });
+//   const { getInitialState } = useLinking(ref, {
+//     prefixes: [prefix],
+//     config: {
+//       screens: {
+//         ResetPWScreen: 'reset_password/:token'
+//       }
+//     }
+//   });
 
-  const [isReady, setIsReady] = React.useState(false);
-  const [initialState, setInitialState] = React.useState();
+//   const [isReady, setIsReady] = React.useState(false);
+//   const [initialState, setInitialState] = React.useState();
 
-  React.useEffect(() => {
-    getInitialState()
-    .catch(() => {})
-    .then(state => {
-      if(state !== undefined){
-        setInitialState(state);
-      }
+//   React.useEffect(() => {
+//     getInitialState()
+//     .catch(() => {})
+//     .then(state => {
+//       if(state !== undefined){
+//         setInitialState(state);
+//       }
+//       console.log(initialState);
+//       setIsReady(true);
+//     });
 
-      setIsReady(true);
-    });
+//   }, [getInitialState]);
 
-  }, [getInitialState]);
+//   if(!isReady){
+//     return null;
+//   }
 
-  if(!isReady){
-    return null;
-  }
-
-  return (
-    <NavigationContainer initialState={initialState} ref={ref}>
-      <ResetStack.Navigator>
-        <ResetStack.Screen name="Forgot Password" component={ForgotPassword} />
-        <ResetStack.Screen name="Reset Password" component={ResetPWScreen} />
-      </ResetStack.Navigator>
-    </NavigationContainer>
-  );
-}
+//   return (
+//     <NavigationContainer initialState={initialState} ref={ref}>
+//       <ResetStack.Navigator>
+//         <ResetStack.Screen name="Forgot Password" component={ForgotPassword} />
+//         <ResetStack.Screen name="Reset Password" component={ResetPWScreen} />
+//       </ResetStack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
 const Camera = ({ navigation, route }) => {
   return (
     <cameraStack.Navigator>
