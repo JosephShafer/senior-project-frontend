@@ -6,8 +6,6 @@ import config from '../config.json';
 import { callWebCrawler } from './ApiSend.js';
 import filter from './filter';
 
-let firstTime = true;
-
 function ProductsResults({ route, navigation }){
     const [productsTitles, setProductsTitles] = useState(route.params.products);
     const [listToUpdate, updateList] = useState(false);
@@ -39,7 +37,7 @@ function ProductsResults({ route, navigation }){
 
     async function searches(){
       if(userEmail !== "empty") {
-
+        /*
         useEffect(() => {
           fetch(url, {
             //"credentials": "include",
@@ -48,9 +46,11 @@ function ProductsResults({ route, navigation }){
             .then(response => response.json())
             .then(json => {
               //console.log("NAME HERE: "+json.names[0].displayName);
-              console.log("EMAIL HERE: "+json.email[0]);
+              console.log("EMAIL HERE: ");
+              console.log(json);
             })
         }, [])
+        */
 
         /*
         try {
@@ -76,13 +76,28 @@ function ProductsResults({ route, navigation }){
             alert('Unable to create search history');
             console.log(error);
         }*/
+
+        try {
+          let response = await fetch(url);
+          let data = await response.json();
+          if(data){
+              alert('Successful');
+              console.log(data[0].searchTerms);
+          }
+          else{
+              alert('Failed! Search History Not Saved.');
+          }
+      } catch (error) {
+          alert('Unable to create search history');
+          console.log(error);
+      }
+
       }
     }
 
-    if (firstTime === true) {
-      searches();
-      firstTime = false;
-    }
+    useEffect(() => {
+      searches()
+    }, [])
 
     useEffect(() => {
         // console.log(route.params)
