@@ -100,7 +100,7 @@ const LoginScreen = ({ navigation, route }) => {
       console.log(res);
       let resetPasswordClosedApp = Linking.parse(res);
       console.log(resetPasswordClosedApp);
-      navigation.navigate("Reset Password", {resetObj: resetPasswordClosedApp})
+      navigation.navigate("Reset Password", {resetInfo: resetPasswordClosedApp})
     });
   }, [])
 
@@ -109,7 +109,7 @@ const LoginScreen = ({ navigation, route }) => {
     let resetPasswordURLChange = Linking.parse(res.url);
     console.log("a reset password link:")
     console.log(resetPasswordURLChange);
-    navigation.navigate("Reset Password", {resetObj: resetPasswordURLChange})
+    navigation.navigate("Reset Password", {resetInfo: resetPasswordURLChange})
   }
 
   const [userToken, setUserToken] = React.useState(null);

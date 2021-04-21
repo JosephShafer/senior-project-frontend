@@ -3,7 +3,7 @@ import { View, Text, TextInput, StyleSheet, TouchableOpacity,
     KeyboardAvoidingView, Linking} from 'react-native';
 import axios from 'axios';
 import { useEffect } from 'react';
-// import config from '../config.json';
+import config from '../config.json';
 
 // export const ResetPassword = ({navigation, route}) => {}
 function ResetPassword  ({ navigation, route })  {
@@ -13,27 +13,31 @@ function ResetPassword  ({ navigation, route })  {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rePassword, setRePassword] = useState('');
-  const [token, setToken] = useState('');
+  const [token, setToken] = useState(route.params.resetInfo);
+
+  useEffect(()=>{
+    console.log(token);
+  }, [])
 
   useEffect(() => {
-    Linking.getInitialURL()
-      .then(url => {
-        const token = url.slice(44);
-        const route = config.myIP.address + `reset_password?token=${token}`;
+  //   Linking.getInitialURL()
+  //     .then(url => {
+  //       const token = url.slice(44);
+        const route = config.myIP.address + `reset_password?token=${token.queryParams.ResetPasswordToken}`;
         axios
           .get(route)
           .then(result => {
             if (!result.data.success) {
               alert(`${result.data.msg}`);
-              navigation.navigate("Forgot Password");
+              // navigation.navigate("Forgot Password");
             } else {
-                setUsername({username: result.data.username});
-                setEmail({email: result.data.email});
-                setToken(token);
+                setUsername(result.data.username);
+                setEmail(result.data.email);
+                setToken(token.queryParams.ResetPasswordToken);
             }
           })
           .catch(err => console.log("Error when validate reset token: " + err)); 
-      }); 
+  //     }); 
   }, []);
 
   const onButtonPress = () => {
