@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
+import React, {useEffect, useRef, useState } from 'react';
+import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, AppState } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import AppLoading from 'expo-app-loading';
@@ -10,7 +10,6 @@ import * as Google from 'expo-auth-session/providers/google';
 import axios from 'axios';
 import validator from 'validator';
 WebBrowser.maybeCompleteAuthSession();
-
 
 
 import config from '../config.json';

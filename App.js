@@ -1,11 +1,12 @@
 // In App.js in a new project
 
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import { AppState } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-
+import * as Linking from 'expo-linking';
 
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
@@ -19,13 +20,12 @@ import ProjectResults from './screens/ProjectResults';
 
 import LoginContext from './screens/context';
 
-import TokenContext  from './screens/TokenContext';
+import TokenContext from './screens/TokenContext';
 import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// https://stackoverflow.com/questions/61264804/how-can-i-use-react-native-asyncstorage-with-react-hooks
+import ResetPWScreen from './screens/ResetPWScreen';
 
 const Tab = createBottomTabNavigator();
 const loginStack = createStackNavigator();
@@ -67,6 +67,54 @@ const Results = ({ navigation, route }) => {
 
 
 const LoginScreen = ({ navigation, route }) => {
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    AppState.addEventListener("change", _handleAppStateChange);
+
+    Linking.addEventListener('url', urlChange);
+
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+      Linking.removeEventListener('url', urlChange);
+    };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+    ) {
+      console.log("App has come to the foreground!");
+    }
+
+    appState.current = nextAppState;
+    setAppStateVisible(appState.current);
+    console.log("AppState", appState.current);
+  };
+
+  React.useEffect(() => {
+    // if app is opened from being closed
+    Linking.getInitialURL().then((res) => {
+      console.log(res);
+      let resetPasswordClosedApp = Linking.parse(res);
+      console.log(resetPasswordClosedApp);
+      if (resetPasswordClosedApp.queryParams.ResetPasswordToken) {
+        navigation.navigate("Reset Password", { resetInfo: resetPasswordClosedApp })
+      }
+    });
+  }, [])
+
+  const urlChange = (res) => {
+    // if app is in background and link opens it
+    let resetPasswordURLChange = Linking.parse(res.url);
+    console.log("a reset password link:")
+    console.log(resetPasswordURLChange);
+    if (resetPasswordURLChange.queryParams.ResetPasswordToken) {
+      navigation.navigate("Reset Password", { resetInfo: resetPasswordURLChange })
+    }
+  }
 
   const [userToken, setUserToken] = React.useState(null);
   React.useEffect(() => {
@@ -94,37 +142,59 @@ const LoginScreen = ({ navigation, route }) => {
           <loginStack.Screen name="Sign Up" component={AccountCreation} />
           <loginStack.Screen name="Account" component={Account} />
           <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
+          <loginStack.Screen name="Reset Password" component={ResetPWScreen} />
         </loginStack.Navigator>
       </LoginContext.Provider>
     )
   }
 
-  // const {token} = React.useContext(TokenContext);
-
-  // const LoggedIn = !!token;
-
-  // return (
-  //     <loginStack.Navigator>
-  //     {LoggedIn ? (
-  //         <>
-  //             <loginStack.Screen name="Home" component={HomeScreen} />
-  //             <loginStack.Screen name="Search History" component={SearchHistory} />
-  //         </>
-  //         ) : (
-  //         <>
-  //             <loginStack.Screen name="Login" component={Login} />
-  //             <loginStack.Screen name="Sign Up" component={AccountCreation} />
-  //             <loginStack.Screen name="Account" component={Account} />
-  //             <loginStack.Screen name="Forgot Password" component={ForgotPassword} />
-  //         </>
-  //     )}
-  //     </loginStack.Navigator>
-  // );
-
-  /** Had to comment this part out for now to make sure regular login works */
-
 };
 
+// https://reactnavigation.org/docs/use-linking/
+// const prefix = Linking.makeUrl("/");
+// const ResetStack = createStackNavigator();
+
+// const Reset = () => {
+//   const ref = React.useRef();
+
+//   const { getInitialState } = useLinking(ref, {
+//     prefixes: [prefix],
+//     config: {
+//       screens: {
+//         ResetPWScreen: 'reset_password/:token'
+//       }
+//     }
+//   });
+
+//   const [isReady, setIsReady] = React.useState(false);
+//   const [initialState, setInitialState] = React.useState();
+
+//   React.useEffect(() => {
+//     getInitialState()
+//     .catch(() => {})
+//     .then(state => {
+//       if(state !== undefined){
+//         setInitialState(state);
+//       }
+//       console.log(initialState);
+//       setIsReady(true);
+//     });
+
+//   }, [getInitialState]);
+
+//   if(!isReady){
+//     return null;
+//   }
+
+//   return (
+//     <NavigationContainer initialState={initialState} ref={ref}>
+//       <ResetStack.Navigator>
+//         <ResetStack.Screen name="Forgot Password" component={ForgotPassword} />
+//         <ResetStack.Screen name="Reset Password" component={ResetPWScreen} />
+//       </ResetStack.Navigator>
+//     </NavigationContainer>
+//   );
+// }
 const Camera = ({ navigation, route }) => {
   return (
     <cameraStack.Navigator>
@@ -137,9 +207,9 @@ const Camera = ({ navigation, route }) => {
 function MyTabs() {
   return (
     <Tab.Navigator
-    tabBarOptions={{
-      labelStyle: { fontSize: 18},
-    }}
+      tabBarOptions={{
+        labelStyle: { fontSize: 18 },
+      }}
     >
       {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
       <Tab.Screen name="User" component={LoginScreen} />
@@ -150,25 +220,9 @@ function MyTabs() {
 
 function App() {
 
-  /** J.P: my attempt at login */
-  // const [token, setToken] = React.useState('');
-
-  // const loadData = async () => {
-  //     const storedToken = await AsyncStorage.getItem('token');
-  //     setToken(storedToken);
-
-  //     return;
-  // };
-
-  // React.useEffect(() => {
-  //     loadData();
-  // }, []);
-
   return (
     <NavigationContainer>
-      {/* <TokenContext.Provider value={{token}}> */}
-        <MyTabs />
-      {/* </TokenContext.Provider> */}
+      <MyTabs />
     </NavigationContainer>
   );
 }
