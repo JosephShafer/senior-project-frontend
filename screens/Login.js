@@ -69,9 +69,10 @@ function Login({ navigation }) {
         const user = {...result.data.user};
         
         // console.log(user)
-        AsyncStorage.setItem('token', JSON.stringify(user._id))
+        AsyncStorage.setItem('token', JSON.stringify(user))
         .then(() => {
-          let snapAndGoBackendResponse = {"User" : user._id}
+          let snapAndGoBackendResponse = {"User" : user}
+          snapAndGoBackendResponse['AuthOwner'] = "Snap&Go";
           navigation.navigate('User', {token : snapAndGoBackendResponse});
         })
         .catch(err => alert('Sign In Error!'));

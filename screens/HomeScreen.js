@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
-import loginContext from './context';
+import LoginContext from './context';
 import config from '../config.json';
 
 function HomeScreen({ navigation, route }) {
@@ -11,12 +11,12 @@ function HomeScreen({ navigation, route }) {
   // const [locationText, setLocationInfo] = useState("Searching");
   const [userName, setUserName] = useState("Snap & Go User");
   // const [LastName, setLastName] = useState("User");
-  const userToken = React.useContext(loginContext);
-  console.log(userToken);
+  const userToken = React.useContext(LoginContext);
+  // console.log(userToken);
 
-  if (userToken['AuthOwner'] === 'Google') {
-
-    useEffect(() => {
+  
+  useEffect(() => {
+      if (userToken['AuthOwner'] === 'Google') {
       fetch("https://content-people.googleapis.com/v1/people/me?personFields=names", {
         "credentials": "include",
         "headers": {
@@ -31,8 +31,13 @@ function HomeScreen({ navigation, route }) {
           // console.log(nameReturn);
           setUserName(nameReturn[0]);
         })
+
+      }
+
+        console.log("user Token is: ")
+        console.log(userToken);
+
     }, [])
-  }
 
   // console.log(userToken);
 

@@ -4,7 +4,6 @@ import { KeyboardAvoidingView, StyleSheet, TextInput, Text, View, TouchableOpaci
 
 import config from '../config.json';
 
-
 function AccountCreation() {
     const [username, onChangeUsernameText] = useState('');
     const [email, onChangeEmailText] = useState('');

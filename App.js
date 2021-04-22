@@ -99,7 +99,7 @@ const LoginScreen = ({ navigation, route }) => {
     Linking.getInitialURL().then((res) => {
       console.log(res);
       let resetPasswordClosedApp = Linking.parse(res);
-      console.log(resetPasswordClosedApp);
+      // console.log(resetPasswordClosedApp);
       if (resetPasswordClosedApp.queryParams.ResetPasswordToken) {
         navigation.navigate("Reset Password", { resetInfo: resetPasswordClosedApp })
       }
@@ -110,7 +110,7 @@ const LoginScreen = ({ navigation, route }) => {
     // if app is in background and link opens it
     let resetPasswordURLChange = Linking.parse(res.url);
     console.log("a reset password link:")
-    console.log(resetPasswordURLChange);
+    // console.log(resetPasswordURLChange);
     if (resetPasswordURLChange.queryParams.ResetPasswordToken) {
       navigation.navigate("Reset Password", { resetInfo: resetPasswordURLChange })
     }
