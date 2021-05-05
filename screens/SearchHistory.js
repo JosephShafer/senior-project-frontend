@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
 import * as Location from 'expo-location';
-import LoginContext from './context';
+import LoginContext from '../utility_functions/context';
 import config from '../config.json';
-import ResultStyles from './ResultStyles';
-import { callWebCrawler } from './ApiSend.js';
-import getEmail from './getEmail';
+import ResultStyles from '../styles/ResultStyles';
+import { callWebCrawler } from '../utility_functions/ApiSend.js';
+import getEmail from '../utility_functions/getEmail';
 
 function SearchHistory({ navigation, route }) {
   const [searchResults, setSearchResults] = useState("");

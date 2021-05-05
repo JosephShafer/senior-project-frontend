@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar, TouchableOpacity } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import config from '../config.json';
-import { callWebCrawler } from './ApiSend.js';
-import filter from './filter';
-import ResultStyles from './ResultStyles';
+import { callWebCrawler } from '../utility_functions/ApiSend.js';
+import filter from '../utility_functions/filter';
+import ResultStyles from '../styles/ResultStyles';
 
 
 function ProjectResults({ navigation, route }) {

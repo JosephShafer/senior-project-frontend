@@ -10,7 +10,7 @@ import * as Permissions from 'expo-permissions';
 import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 import config from '../config.json';
-import googleVision, { callWebCrawler } from './ApiSend.js';
+import googleVision, { callWebCrawler } from '../utility_functions/ApiSend.js';
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;

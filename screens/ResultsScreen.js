@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import config from '../config.json';
-import { callWebCrawler } from './ApiSend.js';
+import { callWebCrawler } from '../utility_functions/ApiSend.js';
 
 
 function ResultsScreen({ route, navigation }) {

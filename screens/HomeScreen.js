@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import * as Location from 'expo-location';
-import LoginContext from './context';
+import LoginContext from '../utility_functions/context';
 import config from '../config.json';
 
 function HomeScreen({ navigation, route }) {

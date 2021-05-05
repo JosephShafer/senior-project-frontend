@@ -187,7 +187,7 @@ function Login({ navigation }) {
               onPress={() => promptAsync()}
             >
               <View style={styles.button}>
-                <Text style={styles.buttonText}> Sign In With Service </Text>
+                <Text style={styles.buttonText}> Sign In With Google </Text>
               </View>
             </TouchableOpacity>
           </View>

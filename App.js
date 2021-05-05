@@ -18,9 +18,9 @@ import Account from './screens/otherService';
 import ProductsResults from './screens/ProductsResults';
 import ProjectResults from './screens/ProjectResults';
 
-import LoginContext from './screens/context';
+import LoginContext from './utility_functions/context';
 
-import TokenContext from './screens/TokenContext';
+import TokenContext from './utility_functions/TokenContext';
 import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
 
