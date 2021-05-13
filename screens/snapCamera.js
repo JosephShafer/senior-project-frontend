@@ -393,7 +393,7 @@ function snapCamera({ navigation }) {
           >
             <View style={styles.modalSmallerMainContainer}>
               <View style={styles.modalSubContainer}>
-                <TextInput style={style.TextInput}
+                <TextInput style={styles.textInput}
                   placeholder="Enter the correct item"
                   onChangeText={(value) => { setIdentifiedObject(value) }} />
 

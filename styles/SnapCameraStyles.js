@@ -71,12 +71,12 @@ const styles = StyleSheet.create({
         padding: 10,
         elevation: 2
     },
-    textInput: { 
+    textInput: {
         borderBottomColor: '#000',
         borderBottomWidth: 2,
-        margin: 10, 
-        paddingLeft: 40, 
-        paddingRight: 40 
+        margin: 10,
+        paddingLeft: 40,
+        paddingRight: 40
     },
     closeModalButton: {
         backgroundColor: "#C5DF81",
@@ -85,9 +85,9 @@ const styles = StyleSheet.create({
         elevation: 2,
         marginRight: 15,
     },
-    imageRetakeContainer: { 
-        flex: 1, 
-        flexDirection: "row" 
+    imageRetakeContainer: {
+        flex: 1,
+        flexDirection: "row"
     },
 
 
