@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, Button } from 'react-native';
-import * as Location from 'expo-location';
 import LoginContext from '../utility_functions/context';
 import config from '../config.json';
 import ResultStyles from '../styles/ResultStyles';
@@ -35,19 +34,6 @@ function SearchHistory({ navigation, route }) {
               console.log(data)
               setResultArray([...data.usersSearches]);
               console.log(resultsArray);
-              // if (data) { 
-              //   // setResultArray([...data.searchTerms]);
-              //   console.log(data);
-              //     for(var i = 0; i < data.length; i++) {
-              //       if(userEmail === data[i].email){
-              //         emailFound = true;
-              //         // for(var j = 0; j < data[i].searchTerms.length; j++)
-              //         // resultsArray.push(data[i].searchTerms[j]);
-              //         // console.log(resultsArray);
-              //       }
-
-              //     }
-              // }
             })
             .catch(e => console.log(e))
         })
@@ -63,8 +49,6 @@ function SearchHistory({ navigation, route }) {
         navigation.navigate("Results", { results: res });
       })
   };
-
-  // console.log(resultsArray);
 
   return (
     <View style={ResultStyles.container}>
@@ -87,14 +71,6 @@ function SearchHistory({ navigation, route }) {
     </View>
   );
 
-  // return(
-  //     <View style={{ flex: 0.15, alignItems: 'center', justifyContent: 'center' }}>
-  //         <Text>Snap & Go Past Results</Text>
-  //         { resultsArray.map((item, key)=>(
-  //         <Text key={key} > { item } </Text>)
-  //         )}
-  //     </View>
-  // );
 }
 
 export default SearchHistory;

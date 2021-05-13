@@ -1,10 +1,8 @@
-import React, {useEffect, useRef, useState } from 'react';
-import { ImageBackground, Button, View, Text, TextInput, Image, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity, AppState } from 'react-native';
-import { Asset, useAssets } from 'expo-asset';
+import React, { useState } from 'react';
+import { ImageBackground, View, Text, TextInput, StyleSheet, KeyboardAvoidingView, ScrollView, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 // import AppLoading from 'expo-app-loading';
 import { useFonts } from 'expo-font';
-import AccountCreation from './AccountCreation';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import axios from 'axios';
@@ -19,15 +17,14 @@ function Login({ navigation }) {
   const [password, onChangePasswordText] = useState('');
 
   let validateLogin = () => {
-    if(validator.isEmpty(username) || validator.isEmpty(password)){
+    if (validator.isEmpty(username) || validator.isEmpty(password)) {
       console.log('User Name or Password field is empty');
     }
 
-    if(!validator.isAlphanumeric(username) || !validator.isAlphanumeric(password)){
+    if (!validator.isAlphanumeric(username) || !validator.isAlphanumeric(password)) {
       console.log('Please use standard English characters and numbers only')
     }
   }
-  const [backgroundImage, error] = useAssets([require('../assets/craftyImage.png')]);
 
   const [request, response, promptAsync] = Google.useAuthRequest({
     expoClientId: config.GOOGLE_CLIENT.ID,
@@ -51,7 +48,7 @@ function Login({ navigation }) {
   }
 
   const submitInfo = async () => {
-    if( !username || !password ){
+    if (!username || !password) {
       alert('Username and password are required')
       return;
     }
@@ -63,70 +60,30 @@ function Login({ navigation }) {
 
     const url = config.myIP.address + 'signin'
     axios.post(url, user)
-    .then (result => {
-      if (result.data.success){
-        console.log(result.data.user);
-        const user = {...result.data.user};
-        
-        // console.log(user)
-        AsyncStorage.setItem('token', JSON.stringify(user))
-        .then(() => {
-          let snapAndGoBackendResponse = {"User" : user}
-          snapAndGoBackendResponse['AuthOwner'] = "Snap&Go";
-          navigation.navigate('User', {token : snapAndGoBackendResponse});
-        })
-        .catch(err => alert('Sign In Error!'));
-      }
-      else {
-        alert('Unable to login. Please check your username and password.')
-      }
-    })
-    .catch(err => {
-      // console.log(err);
-      alert('Failed to sign you in! Try creating an account first.')
-    })
+      .then(result => {
+        if (result.data.success) {
+          console.log(result.data.user);
+          const user = { ...result.data.user };
+
+          // console.log(user)
+          AsyncStorage.setItem('token', JSON.stringify(user))
+            .then(() => {
+              let snapAndGoBackendResponse = { "User": user }
+              snapAndGoBackendResponse['AuthOwner'] = "Snap&Go";
+              navigation.navigate('User', { token: snapAndGoBackendResponse });
+            })
+            .catch(err => alert('Sign In Error!'));
+        }
+        else {
+          alert('Unable to login. Please check your username and password.')
+        }
+      })
+      .catch(err => {
+        // console.log(err);
+        alert('Failed to sign you in! Try creating an account first.')
+      })
   }
 
-  // const submitInfo = async () => {
-
-  //   if( !username || !password ){
-  //     alert('Username and password are required')
-  //     return;
-  //   }
-
-  //   const url = config.AWS.url + 'signin';
-
-  //   try {
-  //     let response = await fetch(url, {
-  //       method: 'POST',
-  //       headers: {
-  //         Accept: 'application/json',
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         username: username,
-  //         password: password
-  //       })
-  //     });
-  //     let data = await response.json();
-
-  //     if(data.success){
-  //       await AsyncStorage.setItem('userToken', user._id)
-  //       .then( () => {
-  //         navigation.navigate('HomeScreen');
-  //       })
-  //       .catch(() => {
-  //         alert('There was a sign in error:!');
-  //       })
-  //     } else{
-  //       alert('An error has occurred. Please check the email and password!');
-  //     }
-  //   } catch (error) {
-  //     alert('Unable to sign you in.');
-  //     console.log(error);
-  //   }
-  // }
- 
   return (
     <ImageBackground style={styles.placeholderImage} source={require('../assets/craftyImage.png')}>
       <KeyboardAvoidingView
@@ -156,9 +113,9 @@ function Login({ navigation }) {
               onPress={() => {
                 validateLogin()
                 submitInfo()
-                }
               }
-                
+              }
+
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Login </Text>
@@ -167,7 +124,7 @@ function Login({ navigation }) {
 
             {/* JP: Forgot Password button added */}
             <TouchableOpacity
-              onPress={()=> navigation.push("Forgot Password")}
+              onPress={() => navigation.push("Forgot Password")}
             >
               <View style={styles.button}>
                 <Text style={styles.buttonText}> Forgot Password? </Text>

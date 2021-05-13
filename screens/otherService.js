@@ -10,19 +10,13 @@
 // into login.js, but if we end up adding more login providers we can use this
 // as a reference.
 
-import React, { useState } from 'react';
-import { StyleSheet, View, Text, FlatList, Button } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Text, Button } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import * as Google from 'expo-auth-session/providers/google';
 import config from '../config.json';
 
 WebBrowser.maybeCompleteAuthSession();
-
-
-// Dummy info that will be replaced by auth0/database,
-const accountInfo = { fName: 'Joseph', lName: "Shafer" }
-const lastFewSearches = [{ name: 'yarn', location: 'target' }, { name: 'scissors', location: 'amazon' }, { name: 'glitter', location: 'target' }]
-
 
 // https://docs.expo.io/guides/authentication/#google
 

@@ -10,9 +10,7 @@ import * as Linking from 'expo-linking';
 
 import HomeScreen from './screens/HomeScreen';
 import Login from './screens/Login';
-import PastSearches from './screens/SearchHistory';
 import snapCamera from './screens/snapCamera';
-import ResultsScreen from './screens/ResultsScreen';
 import AccountCreation from './screens/AccountCreation';
 import Account from './screens/otherService';
 import ProductsResults from './screens/ProductsResults';
@@ -20,11 +18,9 @@ import ProjectResults from './screens/ProjectResults';
 
 import LoginContext from './utility_functions/context';
 
-import TokenContext from './utility_functions/TokenContext';
 import ForgotPassword from './screens/forgotPassword';
 import SearchHistory from './screens/SearchHistory';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ResetPWScreen from './screens/ResetPWScreen';
 
 const Tab = createBottomTabNavigator();
@@ -36,17 +32,6 @@ let globToken = 'empty';
 
 const Results = ({ navigation, route }) => {
   const [results, setResults] = React.useState(route.params.results);
-
-  // useEffect(() => {
-  //   if (route.params?.results){
-  //     setResults([
-  //       route.params.results.crawled,
-  //       route.params.results.products,
-  //       route.params.results.projects,
-  //       route.params.results.searchTerm
-  //     ]);
-  //   }
-  // }, [route.params?.results]);
 
   return (
     <LoginContext.Provider value={globToken}>
@@ -99,7 +84,6 @@ const LoginScreen = ({ navigation, route }) => {
     Linking.getInitialURL().then((res) => {
       console.log(res);
       let resetPasswordClosedApp = Linking.parse(res);
-      // console.log(resetPasswordClosedApp);
       if (resetPasswordClosedApp.queryParams.ResetPasswordToken) {
         navigation.navigate("Reset Password", { resetInfo: resetPasswordClosedApp })
       }
@@ -110,7 +94,6 @@ const LoginScreen = ({ navigation, route }) => {
     // if app is in background and link opens it
     let resetPasswordURLChange = Linking.parse(res.url);
     console.log("a reset password link:")
-    // console.log(resetPasswordURLChange);
     if (resetPasswordURLChange.queryParams.ResetPasswordToken) {
       navigation.navigate("Reset Password", { resetInfo: resetPasswordURLChange })
     }
@@ -150,51 +133,6 @@ const LoginScreen = ({ navigation, route }) => {
 
 };
 
-// https://reactnavigation.org/docs/use-linking/
-// const prefix = Linking.makeUrl("/");
-// const ResetStack = createStackNavigator();
-
-// const Reset = () => {
-//   const ref = React.useRef();
-
-//   const { getInitialState } = useLinking(ref, {
-//     prefixes: [prefix],
-//     config: {
-//       screens: {
-//         ResetPWScreen: 'reset_password/:token'
-//       }
-//     }
-//   });
-
-//   const [isReady, setIsReady] = React.useState(false);
-//   const [initialState, setInitialState] = React.useState();
-
-//   React.useEffect(() => {
-//     getInitialState()
-//     .catch(() => {})
-//     .then(state => {
-//       if(state !== undefined){
-//         setInitialState(state);
-//       }
-//       console.log(initialState);
-//       setIsReady(true);
-//     });
-
-//   }, [getInitialState]);
-
-//   if(!isReady){
-//     return null;
-//   }
-
-//   return (
-//     <NavigationContainer initialState={initialState} ref={ref}>
-//       <ResetStack.Navigator>
-//         <ResetStack.Screen name="Forgot Password" component={ForgotPassword} />
-//         <ResetStack.Screen name="Reset Password" component={ResetPWScreen} />
-//       </ResetStack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
 const Camera = ({ navigation, route }) => {
   return (
     <cameraStack.Navigator>
@@ -206,12 +144,7 @@ const Camera = ({ navigation, route }) => {
 
 function MyTabs() {
   return (
-    <Tab.Navigator
-      tabBarOptions={{
-        labelStyle: { fontSize: 18 },
-      }}
-    >
-      {/* <Tab.Screen name="Home" component={HomeScreen} /> */}
+    <Tab.Navigator>
       <Tab.Screen name="User" component={LoginScreen} />
       <Tab.Screen name="Camera" component={Camera} />
     </Tab.Navigator>
@@ -219,7 +152,6 @@ function MyTabs() {
 }
 
 function App() {
-
   return (
     <NavigationContainer>
       <MyTabs />

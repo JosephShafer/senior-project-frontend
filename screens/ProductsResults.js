@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Linking, View, Text, StyleSheet, FlatList, SectionList, StatusBar, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import LoginContext from '../utility_functions/context';
 import config from '../config.json';

@@ -18,7 +18,7 @@ const ResultStyles = StyleSheet.create({
         color: "#0B0080",
         textAlign: 'center',
     },
-        
+
 });
 
 export default ResultStyles;

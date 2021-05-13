@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, TextInput, Text, View, TouchableOpacity } from 'react-native';
 
-
 import config from '../config.json';
 
 function AccountCreation() {
@@ -13,11 +12,11 @@ function AccountCreation() {
 
     const signup = async () => {
 
-        if( !username || !email || !firstName || !lastName|| !password ){
+        if (!username || !email || !firstName || !lastName || !password) {
             alert('All fields are requried');
             return;
         }
-        
+
         // const url = config.aws.url + 'signup';
         const url = config.myIP.address + 'signup';
 
@@ -27,7 +26,7 @@ function AccountCreation() {
                 headers: {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
-                  },
+                },
                 body: JSON.stringify({
                     username: username,
                     email: email,
@@ -37,10 +36,10 @@ function AccountCreation() {
                 })
             });
             let data = await response.json();
-            if(data.success){
+            if (data.success) {
                 alert('Account creation successful');
             }
-            else{
+            else {
                 alert('Failed! If you already have an account, please log in.');
             }
         } catch (error) {
@@ -54,7 +53,7 @@ function AccountCreation() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.loginContainer}>
 
-            <Text style={{paddingLeft: 10,}}>Username</Text>
+            <Text style={{ paddingLeft: 10, }}>Username</Text>
             <TextInput
                 focus
                 autoCompleteType={"username"}
@@ -63,7 +62,7 @@ function AccountCreation() {
                 value={username}
                 placeholder={'Username'}
             />
-            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Email</Text>
+            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Email</Text>
             <TextInput
                 focus
                 autoCompleteType={"email"}
@@ -72,7 +71,7 @@ function AccountCreation() {
                 value={email}
                 placeholder={'Email'}
             />
-            <Text style={{paddingLeft: 10, paddingTop: 25,}}>First Name</Text>
+            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>First Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -82,7 +81,7 @@ function AccountCreation() {
                 placeholder={'First Name'}
             />
             {/* TODO make this left-right */}
-            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Last Name</Text>
+            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Last Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -91,7 +90,7 @@ function AccountCreation() {
                 value={lastName}
                 placeholder={'Last Name'}
             />
-            <Text style={{paddingLeft: 10, paddingTop: 25,}}>Password</Text>
+            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Password</Text>
             <TextInput
                 secureTextEntry
                 style={styles.textBox}
@@ -100,15 +99,15 @@ function AccountCreation() {
                 placeholder={'Password'}
             />
 
-<View style={styles.buttonContainer}>
-            <TouchableOpacity
-                onPress={signup}
-            >
-                <View style={styles.button}>
-                {/* Figure out whats going on with text here */}
-                    <Text style={styles.buttonText}> Create Account </Text>
-                </View>
-            </TouchableOpacity>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    onPress={signup}
+                >
+                    <View style={styles.button}>
+                        {/* Figure out whats going on with text here */}
+                        <Text style={styles.buttonText}> Create Account </Text>
+                    </View>
+                </TouchableOpacity>
             </View>
 
         </KeyboardAvoidingView>
@@ -135,9 +134,9 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         paddingLeft: 20,
     },
-    buttonContainer : {
+    buttonContainer: {
         flex: 1
-      },
+    },
     button: {
         marginTop: 50,
         borderRadius: 20,
@@ -146,12 +145,12 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         width: '90%',
         backgroundColor: 'blue'
-      },
-      buttonText: {
+    },
+    buttonText: {
         color: '#fff',
         fontWeight: 'bold',
         alignSelf: 'center',
-      },
+    },
 });
 
 export default AccountCreation;

@@ -66,29 +66,6 @@ function ResultsScreen({ route, navigation }) {
       .catch(e => console.log(e))
   }, [listToUpdate])
 
-  // updates on timer
-  // const [time, setTime] = useState(0);
-  // useEffect(() => {
-  //   const timer = setTimeout(() => { 
-  //     setTime(time + 1);
-  //   }, 5000);
-
-  //   callWebCrawler(route.params.searchTerm)
-  //     .then((res) => {
-  //       console.log(res)
-  //       setResultText(res.products);
-  //       setProjectsText(res.projects);
-  //       setDATA([
-  //         { title: "Products", data: productsResults },
-  //         { title: "Projects", data: projectResults }
-  //       ]
-  //       )
-  //     }
-  //     ).catch(e => console.log(e))
-  //   return () => {
-  //     clearTimeout(timer);
-  //   }
-  // }, [time])
 
 
 

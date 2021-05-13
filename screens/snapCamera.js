@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
-import { View, Text, StyleSheet, Dimensions, Platform, 
+import {
+  View, Text, StyleSheet, Dimensions, Platform,
   TouchableOpacity, ImageBackground, Modal, Pressable,
-  TextInput} from 'react-native';
+  TextInput
+} from 'react-native';
 // camera, icons, and permissions
 import { Ionicons, Foundation } from '@expo/vector-icons';
 import { Camera } from 'expo-camera';
@@ -25,7 +27,7 @@ function snapCamera({ navigation }) {
   const [cameraType, setType] = useState(Camera.Constants.Type.back);
   const [flash, setFlash] = useState("off");
   const [flashType, setFlashType] = useState("md-flash-off"); // For icon
-  
+
   // Variables related to pictures 
   const [picTaken, setPicTaken] = useState(false);
   const [picUri, setPicUri] = useState(null);
@@ -116,66 +118,54 @@ function snapCamera({ navigation }) {
         console.log("Took picture");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
         console.log(fileInfo.size + " bytes");
-        //console.log(data.base64);
         // Sets picture taken flag to true to show preview and sets image uri
         setPicTaken(true);
         setPicUri(data.uri);
         setBackUri(data.uri);
 
         // Image passed to web crawler
-        try{
+        try {
           let object = await googleVision(data.base64);
           console.log(object)
           setIdentifiedObject(object);
-          // prompt = object;
-          // let res = await callWebCrawler(object);
-          // setSearchResults(res);
-          //console.log("SNAPPROMPT: " + prompt);
           console.log("SNAPPROMPT: " + res);
-        } catch(err) {
+        } catch (err) {
           console.log(err);
         }
 
       } else {
         // Compression for iOS is done here, it compresses the image twice        
-
-
         const options = { quality: 0.01, base64: true };
         let data = await camera.takePictureAsync(options);
         // Info printed to the console
         console.log("Took picture");
         let fileInfo = await FileSystem.getInfoAsync(data.uri);
-        //console.log(fileInfo.size + " bytes");
+
         // Sets picture taken flag to true to show preview
         setPicTaken(true);
         // Second time image is compressed since iOS images are larger
         const data2 = await ImageManipulator.manipulateAsync(
           data.uri,
           [],
-          { compress: 0.01}
+          { compress: 0.01 }
         );
         // Info printed to console
         fileInfo = await FileSystem.getInfoAsync(data2.uri);
         console.log(fileInfo.size + " bytes");
         // Redid base64 encoding to be able to pass it through web crawler
-        data2.base64 = await FileSystem.readAsStringAsync(data2.uri, { encoding: 'base64'  });
-        //console.log(data2.base64);
+        data2.base64 = await FileSystem.readAsStringAsync(data2.uri, { encoding: 'base64' });
+
         // Sets image uri
         setPicUri(data2.uri);
         setBackUri(data2.uri);
 
         // Image passed to web crawler
-        try{
+        try {
           let object = await googleVision(data2.base64);
           console.log(object)
           setIdentifiedObject(object);
           prompt = object;
-          // let res = await callWebCrawler(object);
-          //console.log("SNAPPROMPT: " + prompt);
-          // console.log("SNAPPROMPT: " + res);
-          // setSearchResults(res);
-          //console.log("API's strongest guess: " + res);
-        } catch(err) {
+        } catch (err) {
           console.log(err);
         }
 
@@ -186,9 +176,9 @@ function snapCamera({ navigation }) {
   // Loads the ResultsScreen after a certain time
   const loadResultsScreen = async () => {
     setTimeout(
-      () => { 
+      () => {
         // console.log(searchResults)
-        navigation.navigate("Results", { results: searchResults }); 
+        navigation.navigate("Results", { results: searchResults });
       },
       5000
     )
@@ -206,22 +196,22 @@ function snapCamera({ navigation }) {
 
     loadingAd();
     loadResultsScreen();
-    console.log("TEXTINPUT: "+identifiedObject);
-    
+    console.log("TEXTINPUT: " + identifiedObject);
+
     // Timers set to revert changes made to touchable opacities
     setTimeout(
       () => { setBackUri(picUri) },
       6000
     )
     setTimeout(
-      () => { buttonOpacity = 1},
+      () => { buttonOpacity = 1 },
       2000
     )
     setTimeout(
-      () => { buttonOff = false},
+      () => { buttonOff = false },
       2000
     )
-    
+
   }
 
   const identifiedCorrect = async () => {
@@ -254,24 +244,24 @@ function snapCamera({ navigation }) {
   // Checks for camera permissions to return views
   if (hasPermission === null) {
     return (
-      <View style={{flex:1, flexDirection:"column"}}>
+      <View style={{ flex: 1, flexDirection: "column" }}>
         <Text>Waiting for camera permissions.</Text>
       </View>
     );
   } else if (hasPermission === false) {
     return (
-      <View style={{flex:1, flexDirection:"column"}}>
+      <View style={{ flex: 1, flexDirection: "column" }}>
         <Text>No access to camera.</Text>
       </View>
     );
-  // At this point camera permisson is granted
-  // So it checks if a picture has been taken
-  // If no picture has been taken, the camera screen is shown
-  } else if (picTaken === false) { 
+    // At this point camera permisson is granted
+    // So it checks if a picture has been taken
+    // If no picture has been taken, the camera screen is shown
+  } else if (picTaken === false) {
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         <Camera
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           onCameraReady={setCameraReady}
           type={cameraType}
           autoFocus={'on'}
@@ -289,7 +279,7 @@ function snapCamera({ navigation }) {
             }}>
 
             <TouchableOpacity // Button to flip cameras
-              style={[ styles.icons, styles.touchables, {flex: 0.2,}]}
+              style={[styles.icons, styles.touchables, { flex: 0.2, }]}
               onPress={() => {
                 // Flips cameras 
                 setType(
@@ -299,35 +289,35 @@ function snapCamera({ navigation }) {
                 )
               }}>
               <Ionicons // Icon for camera flipping button
-                        name="md-reverse-camera"
-                        color="white"
-                        size={50}
-                    />
+                name="md-reverse-camera"
+                color="white"
+                size={50}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.5,}]}>
+              style={[styles.touchables, { flex: 0.5, }]}>
             </TouchableOpacity>
 
             <TouchableOpacity // Button to take pictures
-              style={[styles.icons, styles.touchables, {flex: 0.2,}]}
+              style={[styles.icons, styles.touchables, { flex: 0.2, }]}
               onPress={() => takePicture()
               }>
               <Ionicons // Icon for picture taking button
-                        name="md-camera"
-                        color="white"
-                        size={50}
-                    />
+                name="md-camera"
+                color="white"
+                size={50}
+              />
             </TouchableOpacity>
-            
+
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.4,}]}>
+              style={[styles.touchables, { flex: 0.4, }]}>
             </TouchableOpacity>
 
             <TouchableOpacity // Button for flash
-              style={[styles.icons, styles.touchables, 
-                     {flex: 0.2, paddingRight: 8,}]
-                    }
+              style={[styles.icons, styles.touchables,
+              { flex: 0.2, paddingRight: 8, }]
+              }
               onPress={() => {
                 // Sets flash to on or off
                 setFlash(
@@ -343,20 +333,20 @@ function snapCamera({ navigation }) {
                 );
               }}>
               <Ionicons // Icon for flash 
-                        name={flashType}
-                        color="white"
-                        size={50}
-                    />
+                name={flashType}
+                color="white"
+                size={50}
+              />
             </TouchableOpacity>
           </View>
         </Camera>
       </View>
     );
-  // Shows image preview if one was taken
-  // Also shows results page when ready
-} else { 
+    // Shows image preview if one was taken
+    // Also shows results page when ready
+  } else {
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         <ImageBackground
           style={{
             flex: 1,
@@ -367,24 +357,24 @@ function snapCamera({ navigation }) {
             uri: backUri,
           }}
         >
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible}
-              onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-                setModalVisible(!modalVisible);
-              }}
-            >
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={
+              {
+                flex: 0.35,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 22,
+              }
+            }>
               <View style={
-            {
-              flex: 0.35,
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 22,
-            }
-          }>
-                <View style= {
                 {
                   margin: 20,
                   backgroundColor: "white",
@@ -401,16 +391,16 @@ function snapCamera({ navigation }) {
                   elevation: 5
                 }
               }>
-                  <Text>Item Detected: {identifiedObject}</Text>
-                  <Text>Is this correct?</Text>
-                  <View style={{flexDirection:'row'}}>
+                <Text>Item Detected: {identifiedObject}</Text>
+                <Text>Is this correct?</Text>
+                <View style={{ flexDirection: 'row' }}>
                   <Pressable
                     style={
                       {
-                        backgroundColor:"#C5DF81",
+                        backgroundColor: "#C5DF81",
                         borderRadius: 15,
                         padding: 10,
-                        elevation: 2, 
+                        elevation: 2,
                         marginRight: 15,
                       }
                     }
@@ -421,7 +411,7 @@ function snapCamera({ navigation }) {
                   <Pressable
                     style={
                       {
-                        backgroundColor:"#F0623B",
+                        backgroundColor: "#F0623B",
                         borderRadius: 15,
                         padding: 10,
                         elevation: 2
@@ -431,29 +421,29 @@ function snapCamera({ navigation }) {
                   >
                     <Text>No</Text>
                   </Pressable>
-                  </View>
                 </View>
               </View>
-            </Modal>
+            </View>
+          </Modal>
 
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisible2}
-              onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
-                setModalVisible2(!modalVisible2);
-              }}
-            >
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible2}
+            onRequestClose={() => {
+              Alert.alert("Modal has been closed.");
+              setModalVisible2(!modalVisible2);
+            }}
+          >
+            <View style={
+              {
+                flex: 0.3,
+                justifyContent: "center",
+                alignItems: "center",
+                marginTop: 22,
+              }
+            }>
               <View style={
-            {
-              flex: 0.3,
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 22,
-            }
-          }>
-                <View style= {
                 {
                   margin: 20,
                   backgroundColor: "white",
@@ -470,68 +460,68 @@ function snapCamera({ navigation }) {
                   elevation: 5
                 }
               }>
-                  <TextInput style={{borderBottomColor: '#000', borderBottomWidth: 2, margin:10, paddingLeft: 40, paddingRight:40}} 
-                    placeholder="Enter the correct item" 
-                    onChangeText={(value) => {setIdentifiedObject(value)}} />
-  
-                      {/** This button is responsible to close the modal */}
-                      <Pressable
-                        style={
-                          {
-                            backgroundColor:"#C5DF81",
-                            borderRadius: 15,
-                            padding: 10,
-                            elevation: 2, 
-                            marginRight: 15,
-                          }
-                        }
-                        onPress={() => nowCorrect()}>
-                    <Text>OK</Text>
-                  </Pressable>
-                </View>
+                <TextInput style={{ borderBottomColor: '#000', borderBottomWidth: 2, margin: 10, paddingLeft: 40, paddingRight: 40 }}
+                  placeholder="Enter the correct item"
+                  onChangeText={(value) => { setIdentifiedObject(value) }} />
+
+                {/** This button is responsible to close the modal */}
+                <Pressable
+                  style={
+                    {
+                      backgroundColor: "#C5DF81",
+                      borderRadius: 15,
+                      padding: 10,
+                      elevation: 2,
+                      marginRight: 15,
+                    }
+                  }
+                  onPress={() => nowCorrect()}>
+                  <Text>OK</Text>
+                </Pressable>
               </View>
-            </Modal> 
+            </View>
+          </Modal>
 
           <View // View for image retake option 
-          style={{flex: 1, flexDirection: "row"}}>
-           
+            style={{ flex: 1, flexDirection: "row" }}>
+
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.1,}]}>
-            </TouchableOpacity> 
+              style={[styles.touchables, { flex: 0.1, }]}>
+            </TouchableOpacity>
 
             <TouchableOpacity // Icon & text both work to retake image
-              style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
-              disabled = {buttonOff}
+              style={[styles.touchables, { flex: 0.4, alignItems: "center", }]}
+              disabled={buttonOff}
               onPress={() => retakePic()
               }>
-                <Ionicons // Icon for camera flipping button
-                        style={{opacity: buttonOpacity,}}
-                        name="md-reverse-camera"
-                        color="white"
-                        size={50}
-                    />
-                <Text style={{color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity,}}>
-                  Retake picture
+              <Ionicons // Icon for camera flipping button
+                style={{ opacity: buttonOpacity, }}
+                name="md-reverse-camera"
+                color="white"
+                size={50}
+              />
+              <Text style={{ color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity, }}>
+                Retake picture
                 </Text>
             </TouchableOpacity>
-          
+
             <TouchableOpacity // Empty space so icon buttons work properly
-            style={[styles.touchables, {flex: 0.1,}]}>
-            </TouchableOpacity>  
+              style={[styles.touchables, { flex: 0.1, }]}>
+            </TouchableOpacity>
 
             <TouchableOpacity // Icon & text both work to load results
-              style={[styles.touchables, {flex: 0.4, alignItems: "center",}]}
-              disabled = {buttonOff}
+              style={[styles.touchables, { flex: 0.4, alignItems: "center", }]}
+              disabled={buttonOff}
               onPress={() => loadResults()
               }>
-                <Foundation 
-                        style={{opacity: buttonOpacity,}}
-                        name="results"
-                        color="white"
-                        size={50} 
-                    />
-                <Text style={{color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity,}}>
-                  Results
+              <Foundation
+                style={{ opacity: buttonOpacity, }}
+                name="results"
+                color="white"
+                size={50}
+              />
+              <Text style={{ color: "white", fontSize: 24, textAlign: "center", opacity: buttonOpacity, }}>
+                Results
                 </Text>
             </TouchableOpacity>
 
@@ -556,19 +546,5 @@ const styles = StyleSheet.create({
   },
 });
 
-
-// // Below area is what makes the possible screens for tab
-// const Stack = createStackNavigator();
-
-// function snapCamera() {
-//   return (
-//     <NavigationContainer independent={true}>
-//       <Stack.Navigator initialRouteName="Camera">
-//         <Stack.Screen name="Camera" component={cameraSnap} />
-//         <Stack.Screen name="Results" component={Results} />
-//       </Stack.Navigator>
-//     </NavigationContainer>
-//   );
-// }
 
 export default snapCamera;
