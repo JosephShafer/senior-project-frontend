@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, StyleSheet, TextInput, Text, View, TouchableOpacity } from 'react-native';
+import { KeyboardAvoidingView, TextInput, Text, View, TouchableOpacity } from 'react-native';
 
 import config from '../config.json';
+import styles from '../styles/AccountCreationStyles';
 
 function AccountCreation() {
     const [username, onChangeUsernameText] = useState('');
@@ -17,7 +18,6 @@ function AccountCreation() {
             return;
         }
 
-        // const url = config.aws.url + 'signup';
         const url = config.myIP.address + 'signup';
 
         try {
@@ -53,7 +53,7 @@ function AccountCreation() {
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             style={styles.loginContainer}>
 
-            <Text style={{ paddingLeft: 10, }}>Username</Text>
+            <Text style={styles.usernameText}>Username</Text>
             <TextInput
                 focus
                 autoCompleteType={"username"}
@@ -62,7 +62,7 @@ function AccountCreation() {
                 value={username}
                 placeholder={'Username'}
             />
-            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Email</Text>
+            <Text style={styles.innerTextTextBox}>Email</Text>
             <TextInput
                 focus
                 autoCompleteType={"email"}
@@ -71,7 +71,7 @@ function AccountCreation() {
                 value={email}
                 placeholder={'Email'}
             />
-            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>First Name</Text>
+            <Text style={styles.innerTextTextBox}>First Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -80,8 +80,7 @@ function AccountCreation() {
                 value={firstName}
                 placeholder={'First Name'}
             />
-            {/* TODO make this left-right */}
-            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Last Name</Text>
+            <Text style={styles.innerTextTextBox}>Last Name</Text>
             <TextInput
                 focus
                 autoCompleteType={"name"}
@@ -90,7 +89,7 @@ function AccountCreation() {
                 value={lastName}
                 placeholder={'Last Name'}
             />
-            <Text style={{ paddingLeft: 10, paddingTop: 25, }}>Password</Text>
+            <Text style={styles.innerTextTextBox}>Password</Text>
             <TextInput
                 secureTextEntry
                 style={styles.textBox}
@@ -104,7 +103,6 @@ function AccountCreation() {
                     onPress={signup}
                 >
                     <View style={styles.button}>
-                        {/* Figure out whats going on with text here */}
                         <Text style={styles.buttonText}> Create Account </Text>
                     </View>
                 </TouchableOpacity>
@@ -115,42 +113,5 @@ function AccountCreation() {
 
 }
 
-// todo instead of copying over files combine these
-
-const styles = StyleSheet.create({
-    loginContainer: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: "space-between",
-        paddingTop: 25,
-    },
-    textBox: {
-        height: 40,
-        width: '90%',
-        marginTop: 10,
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 20,
-        marginLeft: 10,
-        paddingLeft: 20,
-    },
-    buttonContainer: {
-        flex: 1
-    },
-    button: {
-        marginTop: 50,
-        borderRadius: 20,
-        paddingVertical: 14,
-        paddingHorizontal: 90,
-        alignSelf: 'center',
-        width: '90%',
-        backgroundColor: 'blue'
-    },
-    buttonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-        alignSelf: 'center',
-    },
-});
 
 export default AccountCreation;

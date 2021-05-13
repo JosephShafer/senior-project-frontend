@@ -11,7 +11,6 @@ let getEmail = async (token) => {
       })
         .then(response => response.json())
         .then(json => {
-          //console.log("NAME HERE: "+json.names[0].displayName);
           let returnedEmail = json.emailAddresses[0].value;
           console.log("EMAIL HIST: " + returnedEmail);
           return returnedEmail;

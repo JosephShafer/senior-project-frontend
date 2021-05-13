@@ -5,6 +5,7 @@ import config from '../config.json';
 export async function callWebCrawler(target) {
         try {
                 console.log("Attempting connection to AWS server...");
+                console.log("My raget is: ", target)
                 let response = await fetch(config.AWS.ip, {
                         method: "POST",
                         headers: {

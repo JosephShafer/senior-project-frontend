@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 // styling and background image
 import {
-  View, Text, StyleSheet, Dimensions, Platform,
+  View, Text, Dimensions, Platform,
   TouchableOpacity, ImageBackground, Modal, Pressable,
   TextInput
 } from 'react-native';
@@ -13,6 +13,8 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import * as FileSystem from 'expo-file-system';
 import config from '../config.json';
 import googleVision, { callWebCrawler } from '../utility_functions/ApiSend.js';
+
+import styles from "../styles/SnapCameraStyles";
 
 // Variables for buttons to disable them when loading screen is shown
 let buttonOpacity = 1;
@@ -244,13 +246,13 @@ function snapCamera({ navigation }) {
   // Checks for camera permissions to return views
   if (hasPermission === null) {
     return (
-      <View style={{ flex: 1, flexDirection: "column" }}>
+      <View style={styles.noCameraAccessContainer}>
         <Text>Waiting for camera permissions.</Text>
       </View>
     );
   } else if (hasPermission === false) {
     return (
-      <View style={{ flex: 1, flexDirection: "column" }}>
+      <View style={styles.noCameraAccessContainer}>
         <Text>No access to camera.</Text>
       </View>
     );
@@ -259,9 +261,9 @@ function snapCamera({ navigation }) {
     // If no picture has been taken, the camera screen is shown
   } else if (picTaken === false) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.flex1}>
         <Camera
-          style={{ flex: 1 }}
+          style={styles.flex1}
           onCameraReady={setCameraReady}
           type={cameraType}
           autoFocus={'on'}
@@ -272,11 +274,7 @@ function snapCamera({ navigation }) {
             setCamera(ref);
           }}>
           <View // View for icons used by camera screen
-            style={{
-              flex: 1,
-              backgroundColor: 'transparent',
-              flexDirection: 'row',
-            }}>
+            style={styles.iconViewContainer}>
 
             <TouchableOpacity // Button to flip cameras
               style={[styles.icons, styles.touchables, { flex: 0.2, }]}
@@ -346,13 +344,9 @@ function snapCamera({ navigation }) {
     // Also shows results page when ready
   } else {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={styles.flex1}>
         <ImageBackground
-          style={{
-            flex: 1,
-            resizeMode: 'cover',
-            justifyContent: 'center'
-          }}
+          style={styles.imageBackGroundContainer}
           source={{
             uri: backUri,
           }}
@@ -366,57 +360,19 @@ function snapCamera({ navigation }) {
               setModalVisible(!modalVisible);
             }}
           >
-            <View style={
-              {
-                flex: 0.35,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 22,
-              }
-            }>
-              <View style={
-                {
-                  margin: 20,
-                  backgroundColor: "white",
-                  borderRadius: 20,
-                  padding: 15,
-                  alignItems: "center",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 5
-                }
-              }>
+            <View style={styles.modalContainer}>
+              <View style={styles.modalSubContainer}>
                 <Text>Item Detected: {identifiedObject}</Text>
                 <Text>Is this correct?</Text>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={styles.flexRow}>
                   <Pressable
-                    style={
-                      {
-                        backgroundColor: "#C5DF81",
-                        borderRadius: 15,
-                        padding: 10,
-                        elevation: 2,
-                        marginRight: 15,
-                      }
-                    }
+                    style={styles.correctButton}
                     onPress={() => identifiedCorrect()}
                   >
                     <Text>Yes</Text>
                   </Pressable>
                   <Pressable
-                    style={
-                      {
-                        backgroundColor: "#F0623B",
-                        borderRadius: 15,
-                        padding: 10,
-                        elevation: 2
-                      }
-                    }
+                    style={styles.incorrectButton}
                     onPress={() => identifiedIncorrect()}
                   >
                     <Text>No</Text>
@@ -435,46 +391,15 @@ function snapCamera({ navigation }) {
               setModalVisible2(!modalVisible2);
             }}
           >
-            <View style={
-              {
-                flex: 0.3,
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: 22,
-              }
-            }>
-              <View style={
-                {
-                  margin: 20,
-                  backgroundColor: "white",
-                  borderRadius: 20,
-                  padding: 15,
-                  alignItems: "center",
-                  shadowColor: "#000",
-                  shadowOffset: {
-                    width: 0,
-                    height: 2
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 4,
-                  elevation: 5
-                }
-              }>
-                <TextInput style={{ borderBottomColor: '#000', borderBottomWidth: 2, margin: 10, paddingLeft: 40, paddingRight: 40 }}
+            <View style={styles.modalSmallerMainContainer}>
+              <View style={styles.modalSubContainer}>
+                <TextInput style={style.TextInput}
                   placeholder="Enter the correct item"
                   onChangeText={(value) => { setIdentifiedObject(value) }} />
 
                 {/** This button is responsible to close the modal */}
                 <Pressable
-                  style={
-                    {
-                      backgroundColor: "#C5DF81",
-                      borderRadius: 15,
-                      padding: 10,
-                      elevation: 2,
-                      marginRight: 15,
-                    }
-                  }
+                  style={styles.closeModalButton}
                   onPress={() => nowCorrect()}>
                   <Text>OK</Text>
                 </Pressable>
@@ -482,19 +407,22 @@ function snapCamera({ navigation }) {
             </View>
           </Modal>
 
-          <View // View for image retake option 
-            style={{ flex: 1, flexDirection: "row" }}>
+          {/* View for image retake option  */}
+          <View style={styles.imageRetakeContainer}>
 
-            <TouchableOpacity // Empty space so icon buttons work properly
+            {/* Empty space so icon buttons work properly */}
+            <TouchableOpacity
               style={[styles.touchables, { flex: 0.1, }]}>
             </TouchableOpacity>
 
-            <TouchableOpacity // Icon & text both work to retake image
+            {/* Icon & text both work to retake image */}
+            <TouchableOpacity
               style={[styles.touchables, { flex: 0.4, alignItems: "center", }]}
               disabled={buttonOff}
               onPress={() => retakePic()
               }>
-              <Ionicons // Icon for camera flipping button
+              {/* Icon for camera flipping button */}
+              <Ionicons
                 style={{ opacity: buttonOpacity, }}
                 name="md-reverse-camera"
                 color="white"
@@ -505,11 +433,13 @@ function snapCamera({ navigation }) {
                 </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity // Empty space so icon buttons work properly
+            {/* Empty space so icon buttons work properly */}
+            <TouchableOpacity
               style={[styles.touchables, { flex: 0.1, }]}>
             </TouchableOpacity>
 
-            <TouchableOpacity // Icon & text both work to load results
+            {/* Icon & text both work to load results */}
+            <TouchableOpacity
               style={[styles.touchables, { flex: 0.4, alignItems: "center", }]}
               disabled={buttonOff}
               onPress={() => loadResults()
@@ -532,19 +462,7 @@ function snapCamera({ navigation }) {
   }
 }
 
-// Stylesheet for touchable opacities
-const styles = StyleSheet.create({
-  icons: {
-    paddingLeft: 12,
-    paddingRight: 15,
-    paddingBottom: 10,
-    paddingTop: 10,
-  },
-  touchables: {
-    alignSelf: 'flex-end',
-    backgroundColor: 'transparent',
-  },
-});
+
 
 
 export default snapCamera;

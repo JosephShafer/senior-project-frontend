@@ -26,23 +26,23 @@ function ProjectResults({ navigation, route }) {
 
     return (
         <View
-          style={ResultStyles.container}
+            style={ResultStyles.container}
         >
             <FlatList
                 data={projectTitles}
                 keyExtractor={(item, index) => item + index}
                 renderItem={({ item }) => <TouchableOpacity
-                style={ResultStyles.card}
+                    style={ResultStyles.card}
                     title={`${item['extractedTitle']}`}
                     onPress={() => WebBrowser.openBrowserAsync(`${item['link']}`)}
                 >
                     <Text
-                      style={ResultStyles.text}
+                        style={ResultStyles.text}
                     >{`${item['extractedTitle']}`}</Text>
                 </TouchableOpacity>}
                 extraData={listToUpdate}
             />
-            
+
         </View>
     );
 

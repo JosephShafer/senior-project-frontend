@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, StyleSheet, TouchableOpacity,
+  View, Text, TextInput, TouchableOpacity,
   KeyboardAvoidingView
 } from 'react-native';
 import axios from 'axios';
 import { useEffect } from 'react';
 import config from '../config.json';
+import styles from '../styles/ResetPWScreenStyles';
 
 function ResetPassword({ navigation, route }) {
-
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -71,7 +71,7 @@ function ResetPassword({ navigation, route }) {
 
       <View>
         <Text style={styles.header}>Hello, {username}:</Text>
-        <Text style={{ fontSize: 21 }}>Please reset your password here.</Text>
+        <Text style={styles.resetPasswordText}>Please reset your password here.</Text>
       </View>
 
       <View style={styles.sendContainer}>
@@ -98,45 +98,5 @@ function ResetPassword({ navigation, route }) {
 
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  header: {
-    fontSize: 21,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  sendContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 230,
-  },
-  textbox: {
-    borderWidth: 1,
-    fontSize: 20,
-    padding: 10,
-    width: 300,
-    marginBottom: 10,
-    borderRadius: 20,
-    backgroundColor: 'white'
-  },
-  button: {
-    width: 300,
-    padding: 5,
-    borderRadius: 20,
-    alignItems: 'center',
-    backgroundColor: 'blue'
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-    alignSelf: 'center',
-    paddingVertical: 10
-  }
-});
 
 export default ResetPassword;

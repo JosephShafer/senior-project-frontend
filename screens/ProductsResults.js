@@ -5,11 +5,11 @@ import LoginContext from '../utility_functions/context';
 import config from '../config.json';
 import { callWebCrawler } from '../utility_functions/ApiSend.js';
 import filter from '../utility_functions/filter';
-import ResultStyles from '../styles/ResultStyles';
 import getEmail from '../utility_functions/getEmail';
 
+import styles from '../styles/ResultStyles';
 
-function ProductsResults({ route, navigation }) {
+function ProductsResults({ route }) {
   const [productsTitles, setProductsTitles] = useState(route.params.products);
   const [listToUpdate, updateList] = useState(false);
 
@@ -100,7 +100,6 @@ function ProductsResults({ route, navigation }) {
   }, [])
 
   useEffect(() => {
-    // console.log(route.params)
     callWebCrawler(route.params.searchTerm)
       .then((res) => {
         let filteredProducts = filter(res.products);
@@ -115,18 +114,18 @@ function ProductsResults({ route, navigation }) {
 
   return (
     <View
-      style={ResultStyles.container}
+      style={styles.container}
     >
       <FlatList
         data={productsTitles}
         keyExtractor={(item, index) => item + index}
         renderItem={({ item }) => <TouchableOpacity
-          style={ResultStyles.card}
+          style={styles.card}
           title={`${item['extractedTitle']}`}
           onPress={() => WebBrowser.openBrowserAsync(`${item['link']}`)}
         >
           <Text
-            style={ResultStyles.text}
+            style={styles.text}
           >{`${item['extractedTitle']}`}</Text>
         </TouchableOpacity>}
         extraData={listToUpdate}
